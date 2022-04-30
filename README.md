@@ -11,7 +11,7 @@ A CMSC 127 Full-stack Project
 
 1. Postman https://vrfdivino.postman.co/workspace/CMSC-127-Project~35fdb369-819b-4028-ab4a-2e2be2dd5e5b/overview
 
-## Setup python
+## Setup server
 
 1. Create a project environment by using this command `python3 -m venv ./venv`.
    This will create a new Python environment for you.
@@ -20,4 +20,9 @@ A CMSC 127 Full-stack Project
    If succesfully done, you should see a new prompt prepended with `(venv)`.
 3. Install the latest dependencies by typing the command `pip install -r requirements.txt`.
 4. Run server using this command `python .\server\index.py`.
-5. Run client using this command `npm run dev`.
+
+## Setup client
+
+1. Go to client using this command `cd client`.
+2. Install dependencies `npm install`.
+3. Start the client `npm run dev`.

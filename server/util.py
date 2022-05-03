@@ -1,38 +1,61 @@
 import jwt
 from datetime import datetime, timezone,timedelta
 from dotenv import dotenv_values
+from flask import Response
+import json
 
 env = dotenv_values(".env") 
 
 class Config:
     SECRET_KEY = env.get('SECRET_KEY')
+    TOKEN_EXP_DURATION = 100
 
 
 class Status:
     OK = 'ok'
     ERROR = 'error'
+    CREATED = 'created'
+    UNAUTHORIZED = 'unauthorized'
+    BAD_REQ = 'bad_request'
 
-class GenericMessage:
-    SERVER_OK = "server is up and running!"
-    SERVR_ERROR = "uh-oh, server is down!"
-    NOT_AUTH = "you are not authenticated!"
+class Message:
+    UNAUTHORIZED = "You are not authenticated!"
+    INVALID_CRED = "Invalid username/email!"
+    INVALID_PW = "Invalid password!"
+    NO_USER = "No user found!"
+    USER_FOUND = "Successfully found the user!"
+    LOGGED_IN = "Succesffuly logged in!"
+    SERVER_OK = "Server is up and running!"
+    REGISTERED = "Succesffully created a user!"
+    TOKENIZE = "Here is your new auth token!"
 
 
-class Response:
+class Res(Response):
 
     def __init__(self,status,message=None,data=None):
-        self.status = status 
-        self.message =  message 
-        self.data = data
+        super().__init__(
+            json.dumps({
+                'status': status,
+                'msg': message,
+                'data': data
+            }),
+            status=self.http_code(status),
+            mimetype='application/json'
+        )
 
-    def to_map(self):
-        """ Return a serializable http response """
-
-        return {
-            'status': self.status,
-            'message': self.message,
-            'data': self.data
-        }
+    def http_code(self,status):
+        code = None 
+        if status == Status.OK:
+            code = 200
+        elif status == Status.CREATED:
+            code = 201
+        elif status == Status.UNAUTHORIZED:
+            code = 401
+        elif status == Status.ERROR:
+            code = 500
+        elif status == Status.BAD_REQ:
+            code = 400
+        return code
 
 def encode_token(user_id):
     """ Encode an auth token """
@@ -40,7 +63,7 @@ def encode_token(user_id):
     return jwt.encode(
         {
             "user_id": user_id,
-            "exp": datetime.now(tz=timezone.utc) + timedelta(hours=24)
+            "exp": datetime.now(tz=timezone.utc) + timedelta(hours=24*Config.TOKEN_EXP_DURATION)
         }, 
         Config.SECRET_KEY, 
         algorithm="HS256"

@@ -21,50 +21,44 @@ bcrypt = Bcrypt(app)
 def users_ping():
     """ Handle users endpoint health check """
 
-    return jsonify(UserService.ping())
+    return UserService.ping()
 
 @app.post(Url.USERS_REGISTER)
 def users_register():
     """ Handle user registration """
 
-    username = request.json.get('username')
-    email = request.json.get('email')
-    password = request.json.get('password')
-    return jsonify(UserService.register(
+    return UserService.register(
         db,
-        username,
-        email,
-        bcrypt.generate_password_hash(password)
-    ))
+        request.json.get('username'),
+        request.json.get('email'),
+        bcrypt.generate_password_hash(request.json.get('password'))
+    )
 
 @app.post(Url.USERS_LOGIN)
 def users_login():
     """ Handle user login """ 
 
-    username = request.json.get('username')
-    email =  request.json.get('email')
-    password = request.json.get('password')
-    return jsonify(UserService.login(
+    return UserService.login(
         db,
-        username,
-        email,
-        password,
+        request.json.get('username'),
+        request.json.get('email'),
+        request.json.get('password'),
         bcrypt.check_password_hash,
-    ))
+    )
 
 @app.get(Url.USERS_GET_MYSELF)
 def users_get_myself():
     """ Handle user get info """
 
     token = get_bearer_token(request.headers)
-    return jsonify(UserService.get_myself(db,token))
+    return UserService.get_myself(db,token)
 
 @app.post(Url.USERS_REF_TOKEN)
 def users_ref_token():
     """ Handle refreshing of auth token """
 
     token = get_bearer_token(request.headers)
-    return jsonify(UserService.refresh_token(token))
+    return UserService.refresh_token(token)
 
 """ END OF USERS API ENDPOINT """
 

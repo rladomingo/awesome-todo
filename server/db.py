@@ -3,6 +3,8 @@ import sys
 
 class Database:
 
+
+
     def __init__(self,username,password,database):
         self.connect_to_db(username,password,database)
 
@@ -36,5 +38,7 @@ class Database:
         Turn commit to True for INSERT, UPDATE, and DELETE. """
         
         self.cur.execute(sql,args)
-        if commit: self.conn.commit()
+        if commit: 
+            self.conn.commit()
+            return self.cur.lastrowid
         return self.cur.fetchall()

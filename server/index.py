@@ -9,7 +9,10 @@ from flask_cors import CORS
 
 env = dotenv_values(".env")
 app = Flask(__name__)
-cors = CORS(app)
+cors = CORS(
+    app,
+    origins=['http://localhost:3000'],
+)
 db = Database(
     env.get("USERNAME"),
     env.get("PASSWORD"),
@@ -55,6 +58,8 @@ def users_login():
 @app.get(Url.USERS_GET_MYSELF)
 def users_get_myself():
     """ Handle user get info """
+
+    # print(request.headers.get("Authorization"))
 
     token = get_bearer_token(request.headers)
     return UserService.get_myself(db, token)

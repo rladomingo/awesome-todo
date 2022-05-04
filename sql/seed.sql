@@ -41,4 +41,3 @@ CREATE TABLE task (
     CONSTRAINT task_userid_fk FOREIGN KEY(user_id) REFERENCES user(user_id),
     CONSTRAINT task_catid_fk FOREIGN KEY(cat_id) REFERENCES category(cat_id)
 );
-

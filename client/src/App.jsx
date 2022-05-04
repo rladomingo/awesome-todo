@@ -1,33 +1,18 @@
-import { useState, useEffect } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import { Routes, Route, Link } from 'react-router-dom'
+import { routes } from './routes'
 
-function App() {
-  // const [count, setCount] = useState(0)
-  const [response, setResponse] = useState()
-
-  const fetchUsersPing = async () => {
-    try {
-      const res = await fetch('http://localhost:5000/api/v1/users/ping')
-      const json = await res.json()
-      setResponse(json)
-      // throw new Error('testing')
-    } catch(err) {
-      throw err
-    }
-  }
-
-  useEffect(() => {
-    fetchUsersPing()
-  }, [])
-
-
+export default function App() {
   return (
-    <div className="App">
-      {response && JSON.stringify(response)}
+    <div>
+      <Routes>
+        {routes.map(route => (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={<route.element />}
+          />
+        ))}
+      </Routes>
     </div>
   )
-  
 }
-
-export default App

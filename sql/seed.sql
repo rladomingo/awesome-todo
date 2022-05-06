@@ -22,7 +22,6 @@ CREATE TABLE user (
 CREATE TABLE category (
     cat_id INT AUTO_INCREMENT,
     name VARCHAR(32) NOT NULL,
-    num_of_task INT NOT NULL DEFAULT 0,
     user_id INT NOT NULL,
     CONSTRAINT category_catid_pk PRIMARY KEY(cat_id),
     CONSTRAINT cat_userd_fk FOREIGN KEY(user_id) REFERENCES user(user_id)

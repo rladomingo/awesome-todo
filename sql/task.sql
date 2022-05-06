@@ -57,8 +57,10 @@ UPDATE task
 SET completed = 1
 WHERE user_id = 1 AND task_id = 3;
 
--- Add task to a category
--- TODO: if category is available
+-- Add task owned by Juan Dela Cruz to a category
+UPDATE task
+SET cat_id = 2
+WHERE user_id = 1 AND task_id = 1;
 
 -- View task all tasks owned by Juan Dela Cruz due for June
 SELECT * FROM task 

@@ -32,9 +32,9 @@ DELETE FROM Category
 WHERE user_id = 1 AND cat_id = 3;
 
 -- View category 'Category 1' owned by Juan Dela Cruz
-SELECT name, num_of_task FROM category
+SELECT name, (SELECT COUNT(*) FROM task WHERE user_id = 1 AND cat_id = 1) as num_of_task FROM category
 WHERE user_id = 1 AND cat_id = 1;
 
 -- View all categories owned by Juan Dela Cruz
-SELECT name, num_of_task FROM category
+SELECT name, (SELECT COUNT(*) FROM task WHERE user_id = 1) as num_of_task FROM category
 WHERE user_id = 1;

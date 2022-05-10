@@ -25,7 +25,9 @@ CREATE TABLE category (
     date_created DATE DEFAULT NOW(),
     user_id INT NOT NULL,
     CONSTRAINT category_catid_pk PRIMARY KEY(cat_id),
-    CONSTRAINT category_userid_fk FOREIGN KEY(user_id) REFERENCES user(user_id)
+    CONSTRAINT category_userid_fk 
+        FOREIGN KEY(user_id) REFERENCES user(user_id)
+        ON DELETE CASCADE
 );
 
 -- Create task table
@@ -39,16 +41,18 @@ CREATE TABLE task (
     cat_id INT,
     CONSTRAINT task_taskid_pk PRIMARY KEY(task_id), 
     CONSTRAINT task_userid_fk FOREIGN KEY(user_id) REFERENCES user(user_id),
-    CONSTRAINT task_catid_fk FOREIGN KEY(cat_id) REFERENCES category(cat_id)
+    CONSTRAINT task_catid_fk 
+        FOREIGN KEY(cat_id) REFERENCES category(cat_id)
+        ON DELETE CASCADE
 );
 
 -- Create a category summary view
 CREATE VIEW category_summary (
     name,
-    num_of_task
+    num_of_task,
+    user_id
 ) AS SELECT 
     name,
-    COUNT(task_id)
-FROM task 
-NATURAL JOIN category 
-GROUP BY cat_id;
+    (SELECT COUNT(*) FROM task t WHERE t.task_id = task_id),
+    user_id
+FROM category;

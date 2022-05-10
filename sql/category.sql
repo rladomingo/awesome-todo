@@ -1,40 +1,18 @@
--- Add categories for Juan Dela Cruz
+-- Create new category owned by an existing user
 INSERT INTO category (
-    name,
+    name, 
     user_id
 ) VALUES (
-    'Category 1',
-    1
-);
-INSERT INTO category (
-    name,
-    user_id
-) VALUES (
-    'Category 2',
-    1
-);
-INSERT INTO category (
-    name,
-    user_id
-) VALUES (
-    'Category 3',
+    'Mosbius Design Task', 
     1
 );
 
+-- Read all categories owned by an existing user
+SELECT * FROM category_summary WHERE user_id = 1;
 
--- Edit category 'Category 1' name owned by Juan Dela Cruz
-UPDATE category
-SET name = 'my category'
-WHERE user_id = 1 AND cat_id = 1;
+-- Update an existing category owned by an existing user
+UPDATE category SET name = 'Mosbius Design 2.0' 
+WHERE cat_id = 1 AND user_id = 1;
 
--- Delete category 'Category 3' owned by Juan Dela Cruz
-DELETE FROM Category
-WHERE user_id = 1 AND cat_id = 3;
-
--- View category 'Category 1' owned by Juan Dela Cruz
-SELECT name, (SELECT COUNT(*) FROM task WHERE user_id = 1 AND cat_id = 1) as num_of_task FROM category
-WHERE user_id = 1 AND cat_id = 1;
-
--- View all categories owned by Juan Dela Cruz
-SELECT name, (SELECT COUNT(*) FROM task WHERE user_id = 1) as num_of_task FROM category
-WHERE user_id = 1;
+-- Delete an existing category owned by an existing user permanently
+DELETE FROM category WHERE cat_id = 1 AND user_id = 1;

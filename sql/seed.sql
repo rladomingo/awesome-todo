@@ -22,10 +22,10 @@ CREATE TABLE user (
 CREATE TABLE category (
     cat_id INT AUTO_INCREMENT,
     name VARCHAR(32) NOT NULL,
-    num_of_task INT NOT NULL DEFAULT 0,
+    date_created DATE DEFAULT NOW(),
     user_id INT NOT NULL,
     CONSTRAINT category_catid_pk PRIMARY KEY(cat_id),
-    CONSTRAINT cat_userd_fk FOREIGN KEY(user_id) REFERENCES user(user_id)
+    CONSTRAINT category_userid_fk FOREIGN KEY(user_id) REFERENCES user(user_id)
 );
 
 -- Create task table
@@ -41,3 +41,14 @@ CREATE TABLE task (
     CONSTRAINT task_userid_fk FOREIGN KEY(user_id) REFERENCES user(user_id),
     CONSTRAINT task_catid_fk FOREIGN KEY(cat_id) REFERENCES category(cat_id)
 );
+
+-- Create a category summary view
+CREATE VIEW category_summary (
+    name,
+    num_of_task
+) AS SELECT 
+    name,
+    COUNT(task_id)
+FROM task 
+NATURAL JOIN category 
+GROUP BY cat_id;

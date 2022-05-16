@@ -40,10 +40,12 @@ CREATE TABLE task (
     user_id INT NOT NULL,
     cat_id INT,
     CONSTRAINT task_taskid_pk PRIMARY KEY(task_id), 
-    CONSTRAINT task_userid_fk FOREIGN KEY(user_id) REFERENCES user(user_id),
+    CONSTRAINT task_userid_fk 
+        FOREIGN KEY(user_id) REFERENCES user(user_id)
+        ON DELETE CASCADE,
     CONSTRAINT task_catid_fk 
         FOREIGN KEY(cat_id) REFERENCES category(cat_id)
-        ON DELETE CASCADE
+        ON DELETE SET NULL
 );
 
 -- Create a category summary view

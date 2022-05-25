@@ -16,7 +16,8 @@ cors = CORS(
 db = Database(
     env.get("USERNAME"),
     env.get("PASSWORD"),
-    env.get("DATABASE")
+    env.get("DATABASE"),
+    env.get("PORT")
 )
 bcrypt = Bcrypt(app)
 

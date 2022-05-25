@@ -5,10 +5,10 @@ class Database:
 
 
 
-    def __init__(self,username,password,database):
-        self.connect_to_db(username,password,database)
+    def __init__(self,username,password,database,port):
+        self.connect_to_db(username,password,database,port)
 
-    def connect_to_db(self,username,password,database):
+    def connect_to_db(self,username,password,database,port):
         """Connect to database"""
 
         try:
@@ -17,7 +17,7 @@ class Database:
                 user=username,
                 password=password,
                 host="localhost",
-                port=3306,
+                port=int(port),
                 database=database
             )
         except mariadb.Error as e:

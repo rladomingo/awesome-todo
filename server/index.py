@@ -23,21 +23,15 @@ db = Database(
 )
 
 
+
+""" START OF USERS API ENDPOINT  """
+
 user_rest = Rest(db,crud={
     'create': 'INSERT INTO user (username, email, password) VALUES (?, ?, ?)',
     'retrieve': 'SELECT user_id, username, email FROM user',
     'update': 'UPDATE user SET email = ? WHERE user_id = ?',
     'delete': 'DELETE FROM user WHERE user_id = ?'
 })
-
-category_rest = Rest(db, crud={
-    'create': 'INSERT INTO category (name, user_id) VALUES (?, ?)',
-    'retrieve': 'SELECT * FROM category',
-    'update': 'UPDATE category SET name = ? WHERE cat_id = ?',
-    'delete': 'DELETE FROM category WHERE cat_id = ?'
-})
-
-""" START OF USERS API ENDPOINT  """
 
 @app.post('/user')
 def create_user():
@@ -49,8 +43,9 @@ def create_user():
             request.json.get('email'),
             request.json.get('password'),
         ), middleware=hash_password)
-        user = filter_users(
+        user = filter_one(
             user_rest.retrieve(None),
+            'user_id',
             user_id
         )
         return jsonify({
@@ -76,8 +71,9 @@ def retrieve_users():
 def retrieve_user(user_id):
     """ return a single user """ 
 
-    result = filter_users(
+    result = filter_one(
         user_rest.retrieve(None), 
+        'user_id',
         user_id,
     )
     return jsonify({
@@ -92,7 +88,7 @@ def update_user(user_id):
 
     try:
         user_rest.update((request.json.get('email'), user_id))
-        user = filter_users(user_rest.retrieve(None), user_id)
+        user = filter_one(user_rest.retrieve(None), 'user_id',user_id)
         return  jsonify({
             'status': 'success',
             'data': user
@@ -126,10 +122,10 @@ def sign_in():
     """ sign in existing user """
 
     try:
-        user = filter_users(
+        user = filter_one(
             user_rest.custom('SELECT * FROM user'),
+            'username',
             request.json.get('username'),
-            key="username"
         )
         if not user or not bcrypt.checkpw(
             request.json.get('password').encode('utf-8'),
@@ -153,6 +149,122 @@ def sign_in():
 
 
 """ END OF USERS API ENDPOINT """
+
+""" START OF CATEGORY API ENDPOINT  """
+
+category_rest = Rest(db, crud={
+    'create': 'INSERT INTO category (name, user_id) VALUES (?, ?)',
+    'retrieve': 'SELECT * FROM category',
+    'update': 'UPDATE category SET name = ? WHERE cat_id = ?',
+    'delete': 'DELETE FROM category WHERE cat_id = ?'
+})
+
+@app.get('/category')
+def retrieve_categories():
+    """ retrieve all categories """
+
+    try:
+        token = get_token(request.headers)
+        user = decode_token(token)
+        result = filter_results(
+            category_rest.retrieve(None),
+            "user_id",
+            user.get('user_id')
+        )
+        
+        return jsonify({
+            'status': 'success',
+            'data': result
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+
+@app.get('/category/<int:cat_id>')
+def retrieve_category(cat_id):
+    """ retrieve single category """
+
+    try:
+        token = get_token(request.headers)
+        user = decode_token(token)
+        result = filter_results(
+            category_rest.retrieve(None),
+            "user_id",
+            user.get('user_id')
+        )
+        
+        return jsonify({
+            'status': 'success',
+            'data': filter_one(result,'cat_id',cat_id)
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+
+@app.post('/category')
+def create_category():
+    """ create new category """
+
+    try:
+        token = get_token(request.headers)
+        user = decode_token(token)
+        cat_id = category_rest.create((request.json.get('name'), user.get('user_id')))
+        res = filter_one(category_rest.retrieve(None), 'cat_id', cat_id)
+        
+        return jsonify({
+            'status': 'success',
+            'data': res
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+
+@app.put('/category/<int:cat_id>')
+def update_category(cat_id):
+    """ update existing category """
+
+    try:
+        token = get_token(request.headers)
+        decode_token(token)
+        category_rest.update((request.json.get('name'), cat_id))
+        res = filter_one(category_rest.retrieve(None), 'cat_id', cat_id)
+        
+        return jsonify({
+            'status': 'success',
+            'data': res
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+
+@app.delete('/category/<int:cat_id>')
+def delete_category(cat_id):
+    """ delete existing category """
+
+    try:
+        token = get_token(request.headers)
+        decode_token(token)
+        category_rest.delete((cat_id,))
+        
+        return jsonify({
+            'status': 'success',
+            'data': True
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+
+""" END OF CATEGORY API ENDPOINT """
 
 
 

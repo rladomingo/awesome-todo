@@ -292,7 +292,7 @@ def delete_category(cat_id):
 task_rest = Rest(db, crud={
     'create': 'INSERT INTO task (title, description, due_date, user_id) VALUES (?, ?, ?, ?)',
     'retrieve': 'SELECT * FROM task',
-    'update': '',
+    'update': 'UPDATE task SET cat_id = ? WHERE task_id = ?',
     'delete': 'DELETE FROM task WHERE task_id = ?'
 })
 
@@ -324,6 +324,8 @@ def create_task():
 def retrieve_tasks():
     """ retrieve all tasks """
 
+
+
     try:
         token = get_token(request.headers)
         user = decode_token(token)
@@ -332,6 +334,13 @@ def retrieve_tasks():
             "user_id",
             user.get('user_id')
         )
+
+        if request.args.get('cat_id'):
+            result = filter_results(
+                result,
+                'cat_id',
+                int(request.args.get('cat_id'))
+            )
         
         return jsonify({
             'status': 'success',
@@ -359,6 +368,27 @@ def retrieve_task(task_id):
         return jsonify({
             'status': 'success',
             'data': filter_one(result,'task_id',task_id)
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+
+@app.put('/task/<int:task_id>')
+def update_task(task_id):
+    """ delete existing task """
+
+    try:
+        token = get_token(request.headers)
+        decode_token(token)
+        task_rest.update((
+            request.json.get('cat_id') ,
+            task_id,))
+        
+        return jsonify({
+            'status': 'success',
+            'data': True
         })
     except Exception as e:
         return jsonify({

@@ -8,7 +8,7 @@ export const createCategory = async name => {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${getToken()}`,
     },
-    body: { name },
+    body: JSON.stringify({ name }),
   })
   const json = await res.json()
   if (json.status !== 'success') {

@@ -8,6 +8,7 @@ export default function Sidebar(props) {
   const [categories, setCategories] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [refresh, setRefresh] = useState(0)
 
   useEffect(() => {
     ;(async () => {
@@ -21,7 +22,7 @@ export default function Sidebar(props) {
         setLoading(false)
       }
     })()
-  }, [])
+  }, [refresh])
 
   if (error) {
     return <div>{error}</div>
@@ -36,7 +37,7 @@ export default function Sidebar(props) {
       background="brand"
       gridArea="sidebar"
       header={<Profile />}
-      footer={<CreateCategory />}
+      footer={<CreateCategory refresh={setRefresh} />}
     >
       <Nav gap="small">
         {categories &&

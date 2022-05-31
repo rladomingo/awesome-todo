@@ -26,7 +26,13 @@ class Database:
 
         # Set conn and cur
         self.conn = conn
-        self.cur = conn.cursor(dictionary=True)
+        # self.cur = conn.cursor(dictionary=True)
+
+    def spawn_cursor(self):
+        self.cur = self.conn.cursor(dictionary=True)
+
+    def close_cursor(self):
+        self.cur.close()
 
     def close_connection(self):
         """ Safely close the db connection """

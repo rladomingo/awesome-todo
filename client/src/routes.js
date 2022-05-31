@@ -15,4 +15,8 @@ export const routes = [
     path: '/',
     element: Home,
   },
+  {
+    path: '/:cat_id',
+    element: Home,
+  },
 ]

@@ -436,4 +436,6 @@ if __name__ == "__main__":
     try:
         app.run(port=env.get("SERVER_PORT"), debug=True)
     except KeyboardInterrupt:
-        db.close_connection()
+        db1.close_connection()
+        db2.close_connection()
+        db3.close_connection()

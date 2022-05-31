@@ -9,7 +9,7 @@ class Rest:
         try:
             final_values = values if not middleware else middleware(values)
             self.db.cur.execute(self.crud['create'], final_values)
-            return True
+            return self.db.cur.lastrowid 
         except Exception as err:
             raise err
 
@@ -25,7 +25,7 @@ class Rest:
         try:
             final_values = values if not middleware else middleware(values)
             self.db.cur.execute(self.crud['update'],final_values)
-            return True
+            return self.db.cur.lastrowid 
         except Exception as err:
             raise err
 
@@ -33,6 +33,16 @@ class Rest:
         try:
             final_values = values if not middleware else middleware(values)
             self.db.cur.execute(self.crud['delete'],final_values)
-            return True
+            return self.db.cur.lastrowid 
+        except Exception as err:
+            raise err
+
+    def custom(self, sql, values=None, read_only=True):
+        try:
+            self.db.cur.execute(sql,values)
+            if read_only:
+                return self.db.cur.fetchall()
+            else:
+                return self.db.cur.lastrowid
         except Exception as err:
             raise err

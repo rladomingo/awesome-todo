@@ -292,7 +292,7 @@ def delete_category(cat_id):
 task_rest = Rest(db, crud={
     'create': 'INSERT INTO task (title, description, due_date, user_id) VALUES (?, ?, ?, ?)',
     'retrieve': 'SELECT * FROM task',
-    'update': 'UPDATE task SET title = ?, description = ?, due_date = ? WHERE task_id = ?',
+    'update': 'UPDATE task SET cat_id = ? WHERE task_id = ?',
     'delete': 'DELETE FROM task WHERE task_id = ?'
 })
 
@@ -385,37 +385,20 @@ def delete_task(task_id):
             'message': str(e)
         })
 
-@app.put('/test/<int:task_id>')
+@app.put('/task/<int:task_id>')
 def update_task_attributes(task_id):
     """ edit task details """
 
     try:
         token = get_token(request.headers)
         decode_token(token)
-        
-        if request.json.get('title'):
-            task_rest.update((
-                request.json.get('title'),
-                task_rest.custom('SELECT description FROM task WHERE task_id = ?',(task_id)),
-                task_rest.custom('SELECT due_date FROM task WHERE task_id = ?',(task_id)),
-                task_id
-            ))
 
-        if request.json.get('description'):
-            task_rest.update((
-                task_rest.custom('SELECT title FROM task WHERE task_id = ?',(task_id)),
-                request.json.get('description'),
-                task_rest.custom('SELECT due_date FROM task WHERE task_id = ?',(task_id)),
-                task_id
-            ))
-
-        if request.json.get('due-date'):
-            task_rest.update((
-                task_rest.custom('SELECT title FROM task WHERE task_id = ?',(task_id)),
-                task_rest.custom('SELECT description FROM task WHERE task_id = ?',(task_id)),
-                request.json.get('due_date'),
-                task_id
-            ))
+        task_rest.update((
+            request.json.get('title'),
+            request.json.get('description'),
+            request.json.get('due_date'),
+            task_id
+        ))
 
         res = filter_one(task_rest.retrieve(None), 'task_id', task_id)
         
@@ -429,7 +412,7 @@ def update_task_attributes(task_id):
             'message': str(e)
         })   
 
-@app.put('/task/<int:task_id>')
+@app.put('/task/done/<int:task_id>')
 def update_task_complete(task_id):
     """ set task as complete """
 
@@ -455,7 +438,7 @@ def update_task_complete(task_id):
             'message': str(e)
         })
 
-@app.put('/task/<int:task_id>')
+@app.put('/task/cat/<int:task_id>')
 def update_task_category(task_id):
     """ set task category """
 
@@ -463,11 +446,7 @@ def update_task_category(task_id):
         token = get_token(request.headers)
         decode_token(token)
 
-        task_rest.custom(
-            'UPDATE task SET cat_id = ? WHERE task_id = ?',
-            (request.json.get('cat_id'), task_id),
-            read_only=False
-        )
+        task_rest.update((request.json.get('cat_id'),task_id))
 
         res = filter_one(task_rest.retrieve(None), 'task_id', task_id)
 
@@ -481,7 +460,7 @@ def update_task_category(task_id):
             'message': str(e)
         })
 
-@app.get('/task')
+@app.get('/task/per_day')
 def retrieve_task_per_day():
     """ retrieve tasks filtered by day """
     
@@ -504,7 +483,7 @@ def retrieve_task_per_day():
             'message': str(e)
         })
         
-@app.get('/task')
+@app.get('/task/per_month')
 def retrieve_task_per_month():
     """ retrieve tasks filtered by month """
 

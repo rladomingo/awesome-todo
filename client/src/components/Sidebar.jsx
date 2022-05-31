@@ -1,13 +1,4 @@
-import {
-  Box,
-  Sidebar as GrommetSidebar,
-  Avatar,
-  Button,
-  Nav,
-  TextInput,
-} from 'grommet'
-import { Help, Projects, Clock } from 'grommet-icons'
-import { useState } from 'react'
+import { Sidebar as GrommetSidebar, Button, Nav } from 'grommet'
 import CreateCategory from './CreateCategory'
 import Profile from './Profile'
 

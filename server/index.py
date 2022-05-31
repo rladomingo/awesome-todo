@@ -289,18 +289,103 @@ def delete_category(cat_id):
 
 """ START OF TASKS API ENDPOINT  """
 
-# TODO: Write commands here
-
 task_rest = Rest(db, crud={
-    'create': '',
-    'retrieve': '',
+    'create': 'INSERT INTO task (title, description, due_date, user_id) VALUES (?, ?, ?, ?)',
+    'retrieve': 'SELECT * FROM task',
     'update': '',
-    'delete': ''
+    'delete': 'DELETE FROM task WHERE task_id = ?'
 })
 
-# TODO: Write endpoints here
+@app.post('/task')
+def create_task():
+    """ create new task """
 
-""" START OF TASKSs API ENDPOINT  """
+    try:
+        token = get_token(request.headers)
+        user = decode_token(token)
+        task_id = task_rest.create((
+            request.json.get('title'),
+            request.json.get('description'),
+            request.json.get('due_date'),
+            user.get('user_id')))
+        res = filter_one(task_rest.retrieve(None), 'task_id', task_id)
+        
+        return jsonify({
+            'status': 'success',
+            'data': res
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+
+@app.get('/task')
+def retrieve_tasks():
+    """ retrieve all tasks """
+
+    try:
+        token = get_token(request.headers)
+        user = decode_token(token)
+        result = filter_results(
+            task_rest.retrieve(None),
+            "user_id",
+            user.get('user_id')
+        )
+        
+        return jsonify({
+            'status': 'success',
+            'data': result
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+
+@app.get('/task/<int:task_id>')
+def retrieve_task(task_id):
+    """ retrieve single task """
+
+    try:
+        token = get_token(request.headers)
+        user = decode_token(token)
+        result = filter_results(
+            task_rest.retrieve(None),
+            "user_id",
+            user.get('user_id')
+        )
+        
+        return jsonify({
+            'status': 'success',
+            'data': filter_one(result,'task_id',task_id)
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+
+@app.delete('/task/<int:task_id>')
+def delete_task(task_id):
+    """ delete existing task """
+
+    try:
+        token = get_token(request.headers)
+        decode_token(token)
+        task_rest.delete((task_id,))
+        
+        return jsonify({
+            'status': 'success',
+            'data': True
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+
+""" END OF TASKS API ENDPOINT  """
 
 
 

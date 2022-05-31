@@ -427,6 +427,127 @@ def delete_task(task_id):
             'message': str(e)
         })
 
+@app.put('/task/<int:task_id>')
+def update_task_attributes(task_id):
+    """ edit task details """
+
+    try:
+        token = get_token(request.headers)
+        decode_token(token)
+
+        title = request.json.get('title')
+        description = request.json.get('description')
+        due_date = request.json.get('due_date')
+        
+        if title != None:
+            task_rest.custom('UPDATE task SET title = ? WHERE task_id = ?',(request.json.get('title'), task_id),False)
+        if description != None:
+            task_rest.custom('UPDATE task SET description = ? WHERE task_id = ?',(request.json.get('description'), task_id),False)
+        if due_date != None:
+            task_rest.custom('UPDATE task SET due_date = ? WHERE task_id = ?',(request.json.get('due_date'), task_id),False)
+
+        res = filter_one(task_rest.retrieve(None), 'task_id', task_id)
+        
+        return jsonify({
+            'status': 'success',
+            'data': res
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })   
+
+@app.put('/task/done/<int:task_id>')
+def update_task_complete(task_id):
+    """ set task as complete """
+
+    try:
+        token = get_token(request.headers)
+        decode_token(token)
+
+        task_rest.custom('UPDATE task SET completed = ? WHERE task_id = ?',(request.json.get('completed'),task_id),False)
+
+        res = filter_one(task_rest.retrieve(None), 'task_id', task_id)
+
+        return jsonify({
+            'status': 'success',
+            'data': res
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+
+@app.put('/task/cat/<int:task_id>')
+def update_task_category(task_id):
+    """ set task category """
+
+    try:
+        token = get_token(request.headers)
+        decode_token(token)
+
+        task_rest.update((request.json.get('cat_id'),task_id))
+
+        res = filter_one(task_rest.retrieve(None), 'task_id', task_id)
+
+        return jsonify({
+            'status': 'success',
+            'data': res
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+
+@app.get('/task/per_day')
+def retrieve_task_per_day():
+    """ retrieve tasks filtered by day """
+    
+    try:
+        token = get_token(request.headers)
+        user = decode_token(token)
+        
+        res = task_rest.custom(
+            'SELECT * FROM task WHERE user_id = ? HAVING WEEKDAY(due_date) = ?',
+            (user.get('user_id'),request.json.get('day'))
+        )
+
+        return jsonify({
+            'status': 'success',
+            'data': res
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+        
+@app.get('/task/per_month')
+def retrieve_task_per_month():
+    """ retrieve tasks filtered by month """
+
+    try:
+        token = get_token(request.headers)
+        user = decode_token(token)
+        
+        res = task_rest.custom(
+            'SELECT * FROM task WHERE user_id = ? HAVING MONTH(due_date) = ?',
+            (user.get('user_id'),request.json.get('month'))
+        )
+
+        return jsonify({
+            'status': 'success',
+            'data': res
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })    
+    
 """ END OF TASKS API ENDPOINT  """
 
 

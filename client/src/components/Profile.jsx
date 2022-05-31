@@ -1,6 +1,43 @@
 import { Box, Avatar, Grid, Text } from 'grommet'
+import { useState, useEffect } from 'react'
+import { Navigate } from 'react-router-dom'
+import { getMyself } from '../apis/user'
+import { removeToken } from '../utils'
 
 export default function Profile(props) {
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [redirect, setRedirect] = useState(false)
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        setUser(await getMyself())
+        setRedirect(false)
+      } catch (err) {
+        setUser(null)
+        setRedirect(true)
+      }
+      setLoading(false)
+    })()
+  }, [])
+
+  const handleLogout = () => {
+    setLoading(true)
+    removeToken()
+    setUser(null)
+    setLoading(false)
+    setRedirect(true)
+  }
+
+  if (redirect) {
+    return <Navigate to="/login" />
+  }
+
+  if (loading) {
+    return <div>loading...</div>
+  }
+
   return (
     <Grid
       rows={['100%']}
@@ -15,8 +52,15 @@ export default function Profile(props) {
         <Avatar src="//s.gravatar.com/avatar/b7fb138d53ba0f573212ccce38a7c43b?s=80" />
       </Box>
       <Box alignContent="center" justify="center" gridArea="info">
-        <Text size="small">juan.delacruz</Text>
-        <Text size="xsmall">juan.delacruz@gmail.com</Text>
+        <Text size="small">{user.username}</Text>
+        <Text size="xsmall">{user.email}</Text>
+        <Text
+          size="xsmall"
+          style={{ textDecoration: 'underline', cursor: 'pointer' }}
+          onClick={handleLogout}
+        >
+          {loading ? 'Loading...' : 'Logout'}
+        </Text>
       </Box>
     </Grid>
   )

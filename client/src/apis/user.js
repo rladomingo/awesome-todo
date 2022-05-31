@@ -39,11 +39,11 @@ export const registerUser = async (username, email, password) => {
   return json.data
 }
 
-export const getMyself = async userId => {
-  const res = await fetch(`${baseUrl}/${userId}`, {
+export const getMyself = async () => {
+  const res = await fetch(`${baseUrl}/me`, {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${getToken}`,
+      Authorization: `Bearer ${getToken()}`,
     },
   })
   const json = await res.json()

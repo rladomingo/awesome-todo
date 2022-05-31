@@ -1,6 +1,33 @@
 import { Box, Avatar, Grid, Text } from 'grommet'
+import { useState, useEffect } from 'react'
+import { getMyself } from '../apis/user'
 
 export default function Profile(props) {
+  const [user, setUser] = useState(null)
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        setUser(await getMyself())
+        setError(null)
+      } catch (err) {
+        setUser(null)
+        setError(String(err))
+      }
+      setLoading(false)
+    })()
+  }, [])
+
+  if (error) {
+    return <div>{error}</div>
+  }
+
+  if (loading) {
+    return <div>loading...</div>
+  }
+
   return (
     <Grid
       rows={['100%']}
@@ -15,8 +42,8 @@ export default function Profile(props) {
         <Avatar src="//s.gravatar.com/avatar/b7fb138d53ba0f573212ccce38a7c43b?s=80" />
       </Box>
       <Box alignContent="center" justify="center" gridArea="info">
-        <Text size="small">juan.delacruz</Text>
-        <Text size="xsmall">juan.delacruz@gmail.com</Text>
+        <Text size="small">{user.username}</Text>
+        <Text size="xsmall">{user.email}</Text>
       </Box>
     </Grid>
   )

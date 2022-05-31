@@ -80,6 +80,25 @@ def retrieve_user(user_id):
         'data': result,
     })
 
+@app.get('/user/me')
+def retrieve_myself():
+    """ return myself (safe) """
+
+    try:
+        token = get_token(request.headers)
+        user = decode_token(token) 
+        res = filter_one(user_rest.retrieve(None),
+        'user_id', user.get('user_id'))
+        return jsonify({
+            'status': 'success',
+            'data': res
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        })
+
 
 @app.put('/user/<int:user_id>')
 def update_user(user_id):
@@ -144,6 +163,9 @@ def sign_in():
             'status': 'error',
             'message': str(e)
         })
+
+
+
 
 
 

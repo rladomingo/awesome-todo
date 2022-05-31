@@ -14,7 +14,19 @@ cors = CORS(
     origins=['http://localhost:3000'],
 )
 
-db = Database(
+db1 = Database(
+    env.get("USERNAME"),
+    env.get("PASSWORD"),
+    env.get("DATABASE"),
+    env.get("PORT")
+)
+db2 = Database(
+    env.get("USERNAME"),
+    env.get("PASSWORD"),
+    env.get("DATABASE"),
+    env.get("PORT")
+)
+db3 = Database(
     env.get("USERNAME"),
     env.get("PASSWORD"),
     env.get("DATABASE"),
@@ -25,7 +37,7 @@ db = Database(
 
 """ START OF USERS API ENDPOINT  """
 
-user_rest = Rest(db,crud={
+user_rest = Rest(db1,crud={
     'create': 'INSERT INTO user (username, email, password) VALUES (?, ?, ?)',
     'retrieve': 'SELECT user_id, username, email FROM user',
     'update': 'UPDATE user SET email = ? WHERE user_id = ?',
@@ -173,7 +185,7 @@ def sign_in():
 
 """ START OF CATEGORY API ENDPOINT  """
 
-category_rest = Rest(db, crud={
+category_rest = Rest(db2, crud={
     'create': 'INSERT INTO category (name, user_id) VALUES (?, ?)',
     'retrieve': 'SELECT * FROM category',
     'update': 'UPDATE category SET name = ? WHERE cat_id = ?',
@@ -289,7 +301,7 @@ def delete_category(cat_id):
 
 """ START OF TASKS API ENDPOINT  """
 
-task_rest = Rest(db, crud={
+task_rest = Rest(db3, crud={
     'create': 'INSERT INTO task (title, description, due_date, user_id) VALUES (?, ?, ?, ?)',
     'retrieve': 'SELECT * FROM task',
     'update': 'UPDATE task SET cat_id = ? WHERE task_id = ?',

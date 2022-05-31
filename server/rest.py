@@ -8,32 +8,44 @@ class Rest:
     def create(self, values, middleware=None):
         try:
             final_values = values if not middleware else middleware(values)
+            self.db.spawn_cursor()
             self.db.cur.execute(self.crud['create'], final_values)
-            return self.db.cur.lastrowid 
+            res = self.db.cur.lastrowid 
+            self.db.close_cursor()
+            return res
         except Exception as err:
             raise err
 
     def retrieve(self, values, middleware=None):
         try:
             final_values = values if not middleware else middleware(values)
+            self.db.spawn_cursor()
             self.db.cur.execute(self.crud['retrieve'],final_values)
-            return self.db.cur.fetchall()
+            res = self.db.cur.fetchall()
+            self.db.close_cursor()
+            return res
         except Exception as err:
             raise err
 
     def update(self, values, middleware=None):
         try:
             final_values = values if not middleware else middleware(values)
+            self.db.spawn_cursor()
             self.db.cur.execute(self.crud['update'],final_values)
-            return self.db.cur.lastrowid 
+            res = self.db.cur.lastrowid 
+            self.db.close_cursor()
+            return res
         except Exception as err:
             raise err
 
     def delete(self, values,middleware=None):
         try:
             final_values = values if not middleware else middleware(values)
+            self.db.spawn_cursor()
             self.db.cur.execute(self.crud['delete'],final_values)
-            return self.db.cur.lastrowid 
+            res =self.db.cur.lastrowid 
+            self.db.close_cursor()
+            return res
         except Exception as err:
             raise err
 

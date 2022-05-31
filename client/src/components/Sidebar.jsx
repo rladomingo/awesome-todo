@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react'
 import { retrieveMyCategories } from '../apis/category'
 import CreateCategory from './CreateCategory'
 import Profile from './Profile'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Sidebar(props) {
   const [categories, setCategories] = useState(null)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
   const [refresh, setRefresh] = useState(0)
+  const navigate = useNavigate()
 
   useEffect(() => {
     ;(async () => {
@@ -40,6 +42,14 @@ export default function Sidebar(props) {
       footer={<CreateCategory refresh={setRefresh} />}
     >
       <Nav gap="small">
+        <Button
+          primary
+          hoverIndicator
+          label="All tasks"
+          onClick={() => {
+            navigate(`/`)
+          }}
+        />
         {categories &&
           categories.map(category => (
             <Button
@@ -47,6 +57,9 @@ export default function Sidebar(props) {
               primary
               hoverIndicator
               label={category.name}
+              onClick={() => {
+                navigate(`/${category.cat_id}`)
+              }}
             />
           ))}
       </Nav>

@@ -29,3 +29,16 @@ export const retrieveMyCategories = async () => {
   }
   return json.data
 }
+
+export const retrieveACategory = async catId => {
+  const res = await fetch(`${baseUrl}/${catId}`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  })
+  const json = await res.json()
+  if (json.status !== 'success') {
+    throw new Error(json.message)
+  }
+  return json.data
+}

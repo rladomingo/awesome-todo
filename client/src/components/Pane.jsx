@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Heading,
   Page,
   PageContent,
@@ -8,22 +7,54 @@ import {
   RadioButton,
   Text,
 } from 'grommet'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { retrieveACategory } from '../apis/category'
+import { retrieveAllTasks, retrieveTasksByCat } from '../apis/task'
 
 export default function Pane(props) {
-  const [todos, setTodos] = useState([
-    { title: 'todo 1', description: 'hello there', completed: false },
-    { title: 'todo 2', description: 'hello there', completed: true },
-    { title: 'twodo 3', description: 'hello there', completed: false },
-    { title: 'twodo 4', description: 'hello there', completed: true },
-  ])
+  const [todos, setTodos] = useState(null)
+  const [category, setCategory] = useState(null)
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const params = useParams()
+  const { cat_id } = params
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        if (cat_id) {
+          setTodos(await retrieveTasksByCat(cat_id))
+          setCategory(await retrieveACategory(cat_id))
+        } else {
+          setCategory(null)
+          setTodos(await retrieveAllTasks())
+        }
+        setError(null)
+      } catch (err) {
+        setError(String(err))
+        setTodos(null)
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [cat_id])
+
+  if (loading) {
+    return <div>loading...</div>
+  }
+
+  if (error) {
+    return <div>{error}</div>
+  }
 
   return (
     <Box gridArea="pane" background="light-1">
       <Page>
         <PageContent>
           <Box>
-            <Heading size="small">This is a category</Heading>
+            {category && <Heading size="small">{category.name}</Heading>}
+            {!cat_id && <Heading size="small">All</Heading>}
           </Box>
           <Box>
             <List
@@ -34,7 +65,7 @@ export default function Pane(props) {
                   <Box direction="row" key={index} pad="xsmall" gap="16px">
                     <RadioButton
                       name={item.title}
-                      checked={item.completed}
+                      checked={item.completed !== 0}
                       onChange={e => () => {}}
                     />
                     <Text>{item.title}</Text>
@@ -55,7 +86,7 @@ export default function Pane(props) {
                   <Box direction="row" key={index} pad="xsmall" gap="16px">
                     <RadioButton
                       name={item.title}
-                      checked={item.completed}
+                      checked={item.completed !== 0}
                       onChange={e => () => {}}
                     />
                     <Text

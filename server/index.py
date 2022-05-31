@@ -4,7 +4,6 @@ from db import Database
 from rest import Rest
 from flask_cors import CORS
 import bcrypt
-import jwt
 from util import *
 
 env = dotenv_values(".env")
@@ -265,6 +264,21 @@ def delete_category(cat_id):
         })
 
 """ END OF CATEGORY API ENDPOINT """
+
+""" START OF TASKS API ENDPOINT  """
+
+# TODO: Write commands here
+
+task_rest = Rest(db, crud={
+    'create': '',
+    'retrieve': '',
+    'update': '',
+    'delete': ''
+})
+
+# TODO: Write endpoints here
+
+""" START OF TASKSs API ENDPOINT  """
 
 
 

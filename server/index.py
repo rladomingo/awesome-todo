@@ -393,12 +393,16 @@ def update_task_attributes(task_id):
         token = get_token(request.headers)
         decode_token(token)
 
-        task_rest.update((
-            request.json.get('title'),
-            request.json.get('description'),
-            request.json.get('due_date'),
-            task_id
-        ))
+        title = request.json.get('title')
+        description = request.json.get('description')
+        due_date = request.json.get('due_date')
+        
+        if title != None:
+            task_rest.custom('UPDATE task SET title = ? WHERE task_id = ?',(request.json.get('title'), task_id),False)
+        if description != None:
+            task_rest.custom('UPDATE task SET description = ? WHERE task_id = ?',(request.json.get('description'), task_id),False)
+        if due_date != None:
+            task_rest.custom('UPDATE task SET due_date = ? WHERE task_id = ?',(request.json.get('due_date'), task_id),False)
 
         res = filter_one(task_rest.retrieve(None), 'task_id', task_id)
         
@@ -420,11 +424,7 @@ def update_task_complete(task_id):
         token = get_token(request.headers)
         decode_token(token)
 
-        task_rest.custom(
-            'UPDATE task SET completed = 1 WHERE task_id = ?',
-            (task_id),
-            read_only=False
-        )
+        task_rest.custom('UPDATE task SET completed = ? WHERE task_id = ?',(request.json.get('completed'),task_id),False)
 
         res = filter_one(task_rest.retrieve(None), 'task_id', task_id)
 

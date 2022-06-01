@@ -302,7 +302,7 @@ def delete_category(cat_id):
 """ START OF TASKS API ENDPOINT  """
 
 task_rest = Rest(db3, crud={
-    'create': 'INSERT INTO task (title, description, due_date, user_id) VALUES (?, ?, ?, ?)',
+    'create': 'INSERT INTO task (title, description, due_date, user_id, cat_id) VALUES (?, ?, ?, ?,?)',
     'retrieve': 'SELECT * FROM task',
     'update': 'UPDATE task SET cat_id = ? WHERE task_id = ?',
     'delete': 'DELETE FROM task WHERE task_id = ?'
@@ -319,7 +319,8 @@ def create_task():
             request.json.get('title'),
             request.json.get('description'),
             request.json.get('due_date'),
-            user.get('user_id')))
+            user.get('user_id'),
+            request.json.get('cat_id')))
         res = filter_one(task_rest.retrieve(None), 'task_id', task_id)
         
         return jsonify({

@@ -26,3 +26,34 @@ export const retrieveTasksByCat = async catId => {
   }
   return json.data
 }
+
+export const markTodoAsDone = async (todoId, completed) => {
+  const res = await fetch(`${baseUrl}/done/${todoId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify({ completed }),
+  })
+
+  const json = await res.json()
+  if (json.status !== 'success') {
+    throw new Error(json.message)
+  }
+  return json.data
+}
+
+export const deleteTask = async todoId => {
+  const res = await fetch(`${baseUrl}/${todoId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  })
+  const json = await res.json()
+  if (json.status !== 'success') {
+    throw new Error(json.message)
+  }
+  return json.data
+}

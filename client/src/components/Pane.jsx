@@ -9,7 +9,7 @@ import {
   CheckBox,
   Button,
 } from 'grommet'
-import { FormTrash } from 'grommet-icons'
+import { FormEdit, FormTrash } from 'grommet-icons'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { retrieveACategory } from '../apis/category'
@@ -20,6 +20,7 @@ import {
   retrieveTasksByCat,
 } from '../apis/task'
 import CreateTask from './CreateTask'
+import EditTask from './EditTask'
 
 export default function Pane(props) {
   const [todos, setTodos] = useState(null)
@@ -29,6 +30,10 @@ export default function Pane(props) {
   const params = useParams()
   const { cat_id } = params
   const [reload, setReload] = useState(true)
+
+  // modal to edit task
+  const [showTask, setShowTask] = useState(false)
+  const [selectedTask, setSelectedTask] = useState(null)
 
   useEffect(() => {
     ;(async () => {
@@ -62,6 +67,13 @@ export default function Pane(props) {
   return (
     <Box gridArea="pane" background="light-1">
       <Page height="100vh">
+        {showTask && (
+          <EditTask
+            setShow={setShowTask}
+            task={selectedTask}
+            reload={setReload}
+          />
+        )}
         <PageContent height="100%">
           <Box justify="between" direction="column" height="100%">
             <Box>
@@ -95,21 +107,36 @@ export default function Pane(props) {
                               }
                             }}
                           />
-                          <Text>{item.title}</Text>
+                          <Box>
+                            <Text>{item.title}</Text>
+                            <Text size="xsmall">
+                              {item.description && item.description}
+                            </Text>
+                          </Box>
                         </Box>
-                        <Button
-                          hoverIndicator
-                          icon={<FormTrash />}
-                          onClick={async () => {
-                            try {
-                              await deleteTask(item.task_id)
-                              setError(null)
-                              setReload(prev => !prev)
-                            } catch (err) {
-                              setError(String(err))
-                            }
-                          }}
-                        />
+                        <Box direction="row">
+                          <Button
+                            hoverIndicator
+                            icon={<FormEdit />}
+                            onClick={() => {
+                              setShowTask(true)
+                              setSelectedTask(item)
+                            }}
+                          />
+                          <Button
+                            hoverIndicator
+                            icon={<FormTrash />}
+                            onClick={async () => {
+                              try {
+                                await deleteTask(item.task_id)
+                                setError(null)
+                                setReload(prev => !prev)
+                              } catch (err) {
+                                setError(String(err))
+                              }
+                            }}
+                          />
+                        </Box>
                       </Box>
                     )
                   }}

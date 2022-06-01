@@ -32,23 +32,21 @@ export default function Pane(props) {
 
   useEffect(() => {
     ;(async () => {
-      if (reload) {
-        try {
-          if (cat_id) {
-            setTodos(await retrieveTasksByCat(cat_id))
-            setCategory(await retrieveACategory(cat_id))
-          } else {
-            setCategory(null)
-            setTodos(await retrieveAllTasks())
-          }
-          setError(null)
-        } catch (err) {
-          setError(String(err))
-          setTodos(null)
-        } finally {
-          setLoading(false)
-          setReload(false)
+      try {
+        if (cat_id) {
+          setTodos(await retrieveTasksByCat(cat_id))
+          setCategory(await retrieveACategory(cat_id))
+        } else {
+          setCategory(null)
+          setTodos(await retrieveAllTasks())
         }
+        setError(null)
+      } catch (err) {
+        setError(String(err))
+        setTodos(null)
+      } finally {
+        setLoading(false)
+        setReload(false)
       }
     })()
   }, [cat_id, reload])
@@ -91,7 +89,7 @@ export default function Pane(props) {
                               try {
                                 await markTodoAsDone(item.task_id, 1)
                                 setError(null)
-                                setReload(true)
+                                setReload(prev => !prev)
                               } catch (err) {
                                 setError(String(err))
                               }
@@ -106,7 +104,7 @@ export default function Pane(props) {
                             try {
                               await deleteTask(item.task_id)
                               setError(null)
-                              setReload(true)
+                              setReload(prev => !prev)
                             } catch (err) {
                               setError(String(err))
                             }
@@ -135,7 +133,7 @@ export default function Pane(props) {
                               try {
                                 await markTodoAsDone(item.task_id, 0)
                                 setError(null)
-                                setReload(true)
+                                setReload(prev => !prev)
                               } catch (err) {
                                 setError(String(err))
                               }
@@ -156,7 +154,7 @@ export default function Pane(props) {
                             try {
                               await deleteTask(item.task_id)
                               setError(null)
-                              setReload(true)
+                              setReload(prev => !prev)
                             } catch (err) {
                               setError(String(err))
                             }
@@ -168,7 +166,7 @@ export default function Pane(props) {
                 />
               </Box>
             </Box>
-            <CreateTask reload={setReload} />
+            <CreateTask reload={() => setReload(prev => !prev)} />
           </Box>
         </PageContent>
       </Page>

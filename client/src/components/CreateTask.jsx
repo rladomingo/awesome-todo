@@ -15,7 +15,7 @@ export default function CreateTask(props) {
     try {
       await createTask(title, cat_id)
       setError(null)
-      props.reload(true)
+      props.reload()
     } catch (err) {
       setError(String(err))
     } finally {

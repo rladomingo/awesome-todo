@@ -57,3 +57,19 @@ export const deleteTask = async todoId => {
   }
   return json.data
 }
+
+export const createTask = async (title, cat_id = null) => {
+  const res = await fetch(baseUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify({ title, cat_id }),
+  })
+  const json = await res.json()
+  if (json.status !== 'success') {
+    throw new Error(json.message)
+  }
+  return json.data
+}

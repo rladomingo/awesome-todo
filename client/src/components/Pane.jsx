@@ -27,28 +27,30 @@ export default function Pane(props) {
   const [loading, setLoading] = useState(true)
   const params = useParams()
   const { cat_id } = params
-  const [catId, setCatid] = useState(cat_id)
+  const [reload, setReload] = useState(true)
 
   useEffect(() => {
     ;(async () => {
-      try {
-        if (cat_id) {
-          setTodos(await retrieveTasksByCat(catId))
-          setCategory(await retrieveACategory(catId))
-        } else {
-          setCategory(null)
-          setTodos(await retrieveAllTasks())
+      if (reload) {
+        try {
+          if (cat_id) {
+            setTodos(await retrieveTasksByCat(cat_id))
+            setCategory(await retrieveACategory(cat_id))
+          } else {
+            setCategory(null)
+            setTodos(await retrieveAllTasks())
+          }
+          setError(null)
+        } catch (err) {
+          setError(String(err))
+          setTodos(null)
+        } finally {
+          setLoading(false)
+          setReload(false)
         }
-        setError(null)
-      } catch (err) {
-        setError(String(err))
-        setTodos(null)
-      } finally {
-        setLoading(false)
-        setCatid(null)
       }
     })()
-  }, [catId])
+  }, [cat_id, reload])
 
   if (loading) {
     return <div>loading...</div>
@@ -61,7 +63,7 @@ export default function Pane(props) {
   return (
     <Box gridArea="pane" background="light-1">
       <Page>
-        <PageContent>
+        <PageContent direction="column" justify="between">
           <Box>
             {category && <Heading size="small">{category.name}</Heading>}
             {!cat_id && <Heading size="small">All</Heading>}
@@ -81,7 +83,7 @@ export default function Pane(props) {
                           try {
                             await markTodoAsDone(item.task_id, 1)
                             setError(null)
-                            setCatid(cat_id)
+                            setReload(true)
                           } catch (err) {
                             setError(String(err))
                           }
@@ -94,11 +96,9 @@ export default function Pane(props) {
                       icon={<FormTrash />}
                       onClick={async () => {
                         try {
-                          setLoading(true)
                           await deleteTask(item.task_id)
-                          setCatid(cat_id)
                           setError(null)
-                          setLoading(false)
+                          setReload(true)
                         } catch (err) {
                           setError(String(err))
                         }
@@ -127,7 +127,7 @@ export default function Pane(props) {
                           try {
                             await markTodoAsDone(item.task_id, 0)
                             setError(null)
-                            setCatid(cat_id)
+                            setReload(true)
                           } catch (err) {
                             setError(String(err))
                           }
@@ -146,11 +146,9 @@ export default function Pane(props) {
                       hoverIndicator
                       onClick={async () => {
                         try {
-                          setLoading(true)
                           await deleteTask(item.task_id)
-                          setCatid(cat_id)
                           setError(null)
-                          setLoading(false)
+                          setReload(true)
                         } catch (err) {
                           setError(String(err))
                         }

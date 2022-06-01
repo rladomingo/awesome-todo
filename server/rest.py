@@ -51,10 +51,13 @@ class Rest:
 
     def custom(self, sql, values=None, read_only=True):
         try:
+            self.db.spawn_cursor()
             self.db.cur.execute(sql,values)
             if read_only:
-                return self.db.cur.fetchall()
+                res = self.db.cur.fetchall()
             else:
-                return self.db.cur.lastrowid
+                res = self.db.cur.lastrowid
+            self.db.close_cursor()
+            return res
         except Exception as err:
             raise err

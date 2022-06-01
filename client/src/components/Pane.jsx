@@ -27,7 +27,6 @@ export default function Pane(props) {
   const [loading, setLoading] = useState(true)
   const params = useParams()
   const { cat_id } = params
-  const [refresh, setRefresh] = useState(0)
   const [catId, setCatid] = useState(cat_id)
 
   useEffect(() => {
@@ -49,7 +48,7 @@ export default function Pane(props) {
         setCatid(null)
       }
     })()
-  }, [catId, refresh])
+  }, [catId])
 
   if (loading) {
     return <div>loading...</div>
@@ -79,8 +78,13 @@ export default function Pane(props) {
                         name={item.title}
                         checked={item.completed !== 0}
                         onChange={async e => {
-                          await markTodoAsDone(item.task_id, 1)
-                          setRefresh(prev => ++prev)
+                          try {
+                            await markTodoAsDone(item.task_id, 1)
+                            setError(null)
+                            setCatid(cat_id)
+                          } catch (err) {
+                            setError(String(err))
+                          }
                         }}
                       />
                       <Text>{item.title}</Text>
@@ -120,8 +124,13 @@ export default function Pane(props) {
                         name={item.title}
                         checked={item.completed !== 0}
                         onChange={async e => {
-                          await markTodoAsDone(item.task_id, 0)
-                          setRefresh(prev => ++prev)
+                          try {
+                            await markTodoAsDone(item.task_id, 0)
+                            setError(null)
+                            setCatid(cat_id)
+                          } catch (err) {
+                            setError(String(err))
+                          }
                         }}
                       />
                       <Text

@@ -302,9 +302,9 @@ def delete_category(cat_id):
 """ START OF TASKS API ENDPOINT  """
 
 task_rest = Rest(db3, crud={
-    'create': 'INSERT INTO task (title, description, due_date, user_id) VALUES (?, ?, ?, ?)',
+    'create': 'INSERT INTO task (title, description, due_date, user_id, cat_id) VALUES (?, ?, ?, ?,?)',
     'retrieve': 'SELECT * FROM task',
-    'update': 'UPDATE task SET cat_id = ? WHERE task_id = ?',
+    'update': 'UPDATE task SET title = ?, description = ?, due_date = ?, cat_id = ? WHERE task_id = ?',
     'delete': 'DELETE FROM task WHERE task_id = ?'
 })
 
@@ -319,7 +319,8 @@ def create_task():
             request.json.get('title'),
             request.json.get('description'),
             request.json.get('due_date'),
-            user.get('user_id')))
+            user.get('user_id'),
+            request.json.get('cat_id')))
         res = filter_one(task_rest.retrieve(None), 'task_id', task_id)
         
         return jsonify({
@@ -395,6 +396,9 @@ def update_task(task_id):
         token = get_token(request.headers)
         decode_token(token)
         task_rest.update((
+            request.json.get('title') ,
+            request.json.get('description') ,
+            request.json.get('due_date') ,
             request.json.get('cat_id') ,
             task_id,))
         
@@ -427,32 +431,32 @@ def delete_task(task_id):
             'message': str(e)
         })
 
-@app.put('/task/<int:task_id>')
-def update_task_attributes(task_id):
-    """ edit task details """
+# @app.put('/task/<int:task_id>')
+# def update_task_attributes(task_id):
+#     """ edit task details """
 
-    try:
-        token = get_token(request.headers)
-        decode_token(token)
+#     try:
+#         token = get_token(request.headers)
+#         decode_token(token)
         
-        if request.json.get('title'):
-            task_rest.custom('UPDATE task SET title = ? WHERE task_id = ?',(request.json.get('title'), task_id),False)
-        if request.json.get('description'):
-            task_rest.custom('UPDATE task SET description = ? WHERE task_id = ?',(request.json.get('description'), task_id),False)
-        if request.json.get('due_date'):
-            task_rest.custom('UPDATE task SET due_date = ? WHERE task_id = ?',(request.json.get('due_date'), task_id),False)
+#         if request.json.get('title'):
+#             task_rest.custom('UPDATE task SET title = ? WHERE task_id = ?',(request.json.get('title'), task_id),False)
+#         if request.json.get('description'):
+#             task_rest.custom('UPDATE task SET description = ? WHERE task_id = ?',(request.json.get('description'), task_id),False)
+#         if request.json.get('due_date'):
+#             task_rest.custom('UPDATE task SET due_date = ? WHERE task_id = ?',(request.json.get('due_date'), task_id),False)
 
-        res = filter_one(task_rest.retrieve(None), 'task_id', task_id)
+#         res = filter_one(task_rest.retrieve(None), 'task_id', task_id)
         
-        return jsonify({
-            'status': 'success',
-            'data': res
-        })
-    except Exception as e:
-        return jsonify({
-            'status': 'error',
-            'message': str(e)
-        })   
+#         return jsonify({
+#             'status': 'success',
+#             'data': res
+#         })
+#     except Exception as e:
+#         return jsonify({
+#             'status': 'error',
+#             'message': str(e)
+#         })   
 
 @app.put('/task/done/<int:task_id>')
 def update_task_complete(task_id):

@@ -43,3 +43,17 @@ export const markTodoAsDone = async (todoId, completed) => {
   }
   return json.data
 }
+
+export const deleteTask = async todoId => {
+  const res = await fetch(`${baseUrl}/${todoId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  })
+  const json = await res.json()
+  if (json.status !== 'success') {
+    throw new Error(json.message)
+  }
+  return json.data
+}

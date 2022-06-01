@@ -7,11 +7,14 @@ import {
   RadioButton,
   Text,
   CheckBox,
+  Button,
 } from 'grommet'
+import { FormTrash } from 'grommet-icons'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { retrieveACategory } from '../apis/category'
 import {
+  deleteTask,
   markTodoAsDone,
   retrieveAllTasks,
   retrieveTasksByCat,
@@ -25,13 +28,14 @@ export default function Pane(props) {
   const params = useParams()
   const { cat_id } = params
   const [refresh, setRefresh] = useState(0)
+  const [catId, setCatid] = useState(cat_id)
 
   useEffect(() => {
     ;(async () => {
       try {
         if (cat_id) {
-          setTodos(await retrieveTasksByCat(cat_id))
-          setCategory(await retrieveACategory(cat_id))
+          setTodos(await retrieveTasksByCat(catId))
+          setCategory(await retrieveACategory(catId))
         } else {
           setCategory(null)
           setTodos(await retrieveAllTasks())
@@ -42,9 +46,10 @@ export default function Pane(props) {
         setTodos(null)
       } finally {
         setLoading(false)
+        setCatid(null)
       }
     })()
-  }, [cat_id, refresh])
+  }, [catId, refresh])
 
   if (loading) {
     return <div>loading...</div>
@@ -68,16 +73,33 @@ export default function Pane(props) {
               data={todos.filter(todo => !todo.completed)}
               children={(item, index, obj) => {
                 return (
-                  <Box direction="row" key={index} pad="xsmall" gap="16px">
-                    <CheckBox
-                      name={item.title}
-                      checked={item.completed !== 0}
-                      onChange={async e => {
-                        await markTodoAsDone(item.task_id, 1)
-                        setRefresh(prev => ++prev)
+                  <Box direction="row" justify="between">
+                    <Box direction="row" key={index} pad="xsmall" gap="16px">
+                      <CheckBox
+                        name={item.title}
+                        checked={item.completed !== 0}
+                        onChange={async e => {
+                          await markTodoAsDone(item.task_id, 1)
+                          setRefresh(prev => ++prev)
+                        }}
+                      />
+                      <Text>{item.title}</Text>
+                    </Box>
+                    <Button
+                      hoverIndicator
+                      icon={<FormTrash />}
+                      onClick={async () => {
+                        try {
+                          setLoading(true)
+                          await deleteTask(item.task_id)
+                          setCatid(cat_id)
+                          setError(null)
+                          setLoading(false)
+                        } catch (err) {
+                          setError(String(err))
+                        }
                       }}
                     />
-                    <Text>{item.title}</Text>
                   </Box>
                 )
               }}
@@ -92,22 +114,39 @@ export default function Pane(props) {
               data={todos.filter(todo => todo.completed)}
               children={(item, index, obj) => {
                 return (
-                  <Box direction="row" key={index} pad="xsmall" gap="16px">
-                    <CheckBox
-                      name={item.title}
-                      checked={item.completed !== 0}
-                      onChange={async e => {
-                        await markTodoAsDone(item.task_id, 0)
-                        setRefresh(prev => ++prev)
+                  <Box direction="row" key={index} justify="between">
+                    <Box direction="row" pad="xsmall" gap="16px">
+                      <CheckBox
+                        name={item.title}
+                        checked={item.completed !== 0}
+                        onChange={async e => {
+                          await markTodoAsDone(item.task_id, 0)
+                          setRefresh(prev => ++prev)
+                        }}
+                      />
+                      <Text
+                        style={{
+                          textDecoration: 'line-through',
+                        }}
+                      >
+                        {item.title}
+                      </Text>
+                    </Box>
+                    <Button
+                      icon={<FormTrash />}
+                      hoverIndicator
+                      onClick={async () => {
+                        try {
+                          setLoading(true)
+                          await deleteTask(item.task_id)
+                          setCatid(cat_id)
+                          setError(null)
+                          setLoading(false)
+                        } catch (err) {
+                          setError(String(err))
+                        }
                       }}
                     />
-                    <Text
-                      style={{
-                        textDecoration: 'line-through',
-                      }}
-                    >
-                      {item.title}
-                    </Text>
                   </Box>
                 )
               }}

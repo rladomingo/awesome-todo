@@ -6,11 +6,16 @@ import {
   List,
   RadioButton,
   Text,
+  CheckBox,
 } from 'grommet'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { retrieveACategory } from '../apis/category'
-import { retrieveAllTasks, retrieveTasksByCat } from '../apis/task'
+import {
+  markTodoAsDone,
+  retrieveAllTasks,
+  retrieveTasksByCat,
+} from '../apis/task'
 
 export default function Pane(props) {
   const [todos, setTodos] = useState(null)
@@ -19,6 +24,7 @@ export default function Pane(props) {
   const [loading, setLoading] = useState(true)
   const params = useParams()
   const { cat_id } = params
+  const [refresh, setRefresh] = useState(0)
 
   useEffect(() => {
     ;(async () => {
@@ -38,7 +44,7 @@ export default function Pane(props) {
         setLoading(false)
       }
     })()
-  }, [cat_id])
+  }, [cat_id, refresh])
 
   if (loading) {
     return <div>loading...</div>
@@ -63,10 +69,13 @@ export default function Pane(props) {
               children={(item, index, obj) => {
                 return (
                   <Box direction="row" key={index} pad="xsmall" gap="16px">
-                    <RadioButton
+                    <CheckBox
                       name={item.title}
                       checked={item.completed !== 0}
-                      onChange={e => () => {}}
+                      onChange={async e => {
+                        await markTodoAsDone(item.task_id, 1)
+                        setRefresh(prev => ++prev)
+                      }}
                     />
                     <Text>{item.title}</Text>
                   </Box>
@@ -84,10 +93,13 @@ export default function Pane(props) {
               children={(item, index, obj) => {
                 return (
                   <Box direction="row" key={index} pad="xsmall" gap="16px">
-                    <RadioButton
+                    <CheckBox
                       name={item.title}
                       checked={item.completed !== 0}
-                      onChange={e => () => {}}
+                      onChange={async e => {
+                        await markTodoAsDone(item.task_id, 0)
+                        setRefresh(prev => ++prev)
+                      }}
                     />
                     <Text
                       style={{

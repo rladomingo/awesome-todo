@@ -42,3 +42,17 @@ export const retrieveACategory = async catId => {
   }
   return json.data
 }
+
+export const deleteCategory = async catId => {
+  const res = await fetch(`${baseUrl}/${catId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  })
+  const json = await res.json()
+  if (json.status !== 'success') {
+    throw new Error(json.message)
+  }
+  return json.data
+}

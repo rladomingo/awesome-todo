@@ -348,7 +348,6 @@ def retrieve_tasks():
             "user_id",
             user.get('user_id')
         )
-        result = group_by_completed(result)
 
 
         group_by = request.args.get('group_by')
@@ -356,6 +355,7 @@ def retrieve_tasks():
 
         if not cat_id  and not group_by:
             group_by = None
+            result = group_by_completed(result)
         else:
             if cat_id:
                 result = filter_results(
@@ -363,6 +363,7 @@ def retrieve_tasks():
                     'cat_id',
                     int(request.args.get('cat_id'))
                 )
+                result = group_by_completed(result)
             elif group_by == 'day':
                 result = task_rest.custom(
                     'SELECT * FROM task WHERE user_id = ? ORDER BY due_date ASC'

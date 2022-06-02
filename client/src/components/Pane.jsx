@@ -66,7 +66,11 @@ export default function Pane(props) {
 
   return (
     <Box gridArea="pane" background="light-1">
-      <Page height="100vh">
+      <Page
+        style={{
+          minHeight: '100vh',
+        }}
+      >
         {showTask && (
           <EditTask
             setShow={setShowTask}
@@ -84,7 +88,7 @@ export default function Pane(props) {
               <Box>
                 <List
                   primaryKey="title"
-                  data={todos.filter(todo => !todo.completed)}
+                  data={todos.not_completed}
                   children={(item, index, obj) => {
                     return (
                       <Box direction="row" justify="between">
@@ -109,9 +113,15 @@ export default function Pane(props) {
                           />
                           <Box>
                             <Text>{item.title}</Text>
-                            <Text size="xsmall">
-                              {item.description && item.description}
-                            </Text>
+                            <Box direction="row" align="center" gap="8px">
+                              <Text size="xsmall">
+                                {item.description && item.description}
+                              </Text>
+                              <Text size="xsmall">
+                                Due date:{' '}
+                                {(item.due_date && item.due_date) || 'N/A'}
+                              </Text>
+                            </Box>
                           </Box>
                         </Box>
                         <Box direction="row">
@@ -148,7 +158,7 @@ export default function Pane(props) {
               <Box>
                 <List
                   primaryKey="title"
-                  data={todos.filter(todo => todo.completed)}
+                  data={todos.completed}
                   children={(item, index, obj) => {
                     return (
                       <Box direction="row" key={index} justify="between">

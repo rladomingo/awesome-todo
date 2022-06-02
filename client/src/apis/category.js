@@ -56,3 +56,19 @@ export const deleteCategory = async catId => {
   }
   return json.data
 }
+
+export const editCategory = async (catId, name) => {
+  const res = await fetch(`${baseUrl}/${catId}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name }),
+  })
+  const json = await res.json()
+  if (json.status !== 'success') {
+    throw new Error(json.message)
+  }
+  return json.data
+}

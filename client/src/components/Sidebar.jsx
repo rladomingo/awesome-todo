@@ -12,7 +12,8 @@ import { deleteCategory, retrieveMyCategories } from '../apis/category'
 import CreateCategory from './CreateCategory'
 import Profile from './Profile'
 import { Link, useNavigate } from 'react-router-dom'
-import { FormTrash } from 'grommet-icons'
+import { FormEdit, FormTrash } from 'grommet-icons'
+import EditCategory from './EditCategory'
 
 export default function Sidebar(props) {
   const [categories, setCategories] = useState(null)
@@ -22,6 +23,7 @@ export default function Sidebar(props) {
   const navigate = useNavigate()
   const [showDelete, setShowDelete] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState(null)
+  const [showEdit, setShowEdit] = useState(false)
 
   useEffect(() => {
     ;(async () => {
@@ -99,6 +101,16 @@ export default function Sidebar(props) {
           </Box>
         </Layer>
       )}
+      {showEdit && (
+        <EditCategory
+          exit={() => {
+            setShowEdit(false)
+            setSelectedCategory(null)
+          }}
+          category={selectedCategory}
+          reload={() => setRefresh(prev => ++prev)}
+        />
+      )}
       <GrommetSidebar
         background="brand"
         gridArea="sidebar"
@@ -112,6 +124,14 @@ export default function Sidebar(props) {
             label="All tasks"
             onClick={() => {
               navigate(`/`)
+            }}
+          />
+          <Button
+            primary
+            hoverIndicator
+            label="Planned"
+            onClick={() => {
+              navigate(`/planned`)
             }}
           />
           {categories &&
@@ -129,6 +149,16 @@ export default function Sidebar(props) {
                     label={category.name}
                     onClick={() => {
                       navigate(`/${category.cat_id}`)
+                    }}
+                  />
+                </Box>
+                <Box flex="shrink">
+                  <Button
+                    icon={<FormEdit />}
+                    hoverIndicator
+                    onClick={() => {
+                      setSelectedCategory(category)
+                      setShowEdit(true)
                     }}
                   />
                 </Box>

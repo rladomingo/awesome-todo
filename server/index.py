@@ -9,6 +9,7 @@ from util import *
 env = dotenv_values(".env")
 app = Flask(__name__)
 app.config["APPLICATION_ROOT"] = "/api/v1"
+app.config['JSON_SORT_KEYS'] = False
 cors = CORS(
     app,
     origins=['http://localhost:3000'],
@@ -348,16 +349,37 @@ def retrieve_tasks():
             user.get('user_id')
         )
 
-        if request.args.get('cat_id'):
+
+        group_by = request.args.get('group_by')
+        cat_id = request.args.get('cat_id')
+
+        if cat_id:
             result = filter_results(
                 result,
                 'cat_id',
                 int(request.args.get('cat_id'))
             )
+
+        # result = group_by_completed(result)
+        # result = group_by_day(result)
+        if group_by == 'day':
+            result = task_rest.custom(
+                'SELECT * FROM task WHERE user_id = ? ORDER BY due_date ASC'
+            , (user.get('user_id'),))
+
+            result = group_by_day(result)
+        elif group_by == 'month':
+            result = task_rest.custom(
+                'SELECT *, MONTH(due_date) as month FROM task WHERE user_id = ? ORDER BY month ASC'
+            , (user.get('user_id'),))
+            result = group_by_month(result)
+        else:
+            raise Exception('incorrect group_by filter')
         
         return jsonify({
             'status': 'success',
-            'data': result
+            'data': result,
+            'group_by': group_by
         })
     except Exception as e:
         return jsonify({

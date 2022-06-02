@@ -353,30 +353,36 @@ def retrieve_tasks():
         group_by = request.args.get('group_by')
         cat_id = request.args.get('cat_id')
 
-        if cat_id:
-            result = filter_results(
-                result,
-                'cat_id',
-                int(request.args.get('cat_id'))
-            )
-        elif group_by == 'day':
-            result = task_rest.custom(
-                'SELECT * FROM task WHERE user_id = ? ORDER BY due_date ASC'
-            , (user.get('user_id'),))
-
-            result = group_by_day(result)
-        elif group_by == 'month':
-            result = task_rest.custom(
-                'SELECT *, MONTH(due_date) as month FROM task WHERE user_id = ? ORDER BY month ASC'
-            , (user.get('user_id'),))
-            result = group_by_month(result)
+        if not cat_id  and not group_by:
+            group_by = None
         else:
-            raise Exception('incorrect group_by filter')
+            if cat_id:
+                result = filter_results(
+                    result,
+                    'cat_id',
+                    int(request.args.get('cat_id'))
+                )
+            elif group_by == 'day':
+                result = task_rest.custom(
+                    'SELECT * FROM task WHERE user_id = ? ORDER BY due_date ASC'
+                , (user.get('user_id'),))
+
+                result = group_by_day(result)
+            elif group_by == 'month':
+                result = task_rest.custom(
+                    'SELECT *, MONTH(due_date) as month FROM task WHERE user_id = ? ORDER BY month ASC'
+                , (user.get('user_id'),))
+                result = group_by_month(result)
+            else:
+                raise Exception('incorrect group_by filter')
+
+
+            
         
         return jsonify({
             'status': 'success',
             'data': result,
-            'group_by': group_by
+            'group_by': 'category' if cat_id else group_by  
         })
     except Exception as e:
         return jsonify({

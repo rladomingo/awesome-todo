@@ -2,8 +2,13 @@ import { Grid } from 'grommet'
 
 import Sidebar from '../components/Sidebar'
 import Pane from '../components/Pane'
+import { useParams } from 'react-router-dom'
+import Planned from '../components/Planned'
 
 export default function Home(props) {
+  const params = useParams()
+  const { cat_id } = params
+
   return (
     <Grid
       fill={true}
@@ -15,7 +20,7 @@ export default function Home(props) {
       ]}
     >
       <Sidebar />
-      <Pane />
+      {cat_id === 'planned' ? <Planned /> : <Pane />}
     </Grid>
   )
 }

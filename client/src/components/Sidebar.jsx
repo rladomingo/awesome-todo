@@ -126,6 +126,14 @@ export default function Sidebar(props) {
               navigate(`/`)
             }}
           />
+          <Button
+            primary
+            hoverIndicator
+            label="Planned"
+            onClick={() => {
+              navigate(`/planned`)
+            }}
+          />
           {categories &&
             categories.map(category => (
               <Box

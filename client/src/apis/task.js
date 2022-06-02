@@ -109,3 +109,16 @@ export const updateTodo = async (
   }
   return json.data
 }
+
+export const retrieveTasksGroupBy = async by => {
+  const res = await fetch(`${baseUrl}?group_by=${by}`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  })
+  const json = await res.json()
+  if (json.status !== 'success') {
+    throw new Error(json.message)
+  }
+  return json.data
+}

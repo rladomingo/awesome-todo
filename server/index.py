@@ -359,10 +359,7 @@ def retrieve_tasks():
                 'cat_id',
                 int(request.args.get('cat_id'))
             )
-
-        # result = group_by_completed(result)
-        # result = group_by_day(result)
-        if group_by == 'day':
+        elif group_by == 'day':
             result = task_rest.custom(
                 'SELECT * FROM task WHERE user_id = ? ORDER BY due_date ASC'
             , (user.get('user_id'),))

@@ -348,6 +348,7 @@ def retrieve_tasks():
             "user_id",
             user.get('user_id')
         )
+        result = group_by_completed(result)
 
 
         group_by = request.args.get('group_by')

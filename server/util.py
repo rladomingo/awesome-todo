@@ -36,17 +36,17 @@ def filter_results(results, key,value):
             res.append(result)
     return res
 
-def group_by(results, key):
+def group_by_completed(results, key):
     res = {
-        'null': []
+        'not_completed': [],
+        'completed': []
     }
     for result in results:
-        if result.get(key) is None:
-            res["null"].append(result)
-        else:
-            if res.get(str(result.get(key))) is None:
-                res[str(result.get(key))] = []
-            res[str(result.get(key))].append(result)
+        completed = result.get('completed')
+        if completed == 0:
+            res["not_completed"].append(result)
+        elif completed == 1:
+            res["completed"].append(result)
     return res
 
 def group_by_completed(results):

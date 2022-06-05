@@ -12,7 +12,10 @@ const customTheme = deepMerge(base, {
       border: 'control',
       active: 'control',
       focus: 'control',
-      icon: 'brand',
+      icon: {
+        dark: 'white',
+        light: 'brand',
+      },
     },
   },
   button: {

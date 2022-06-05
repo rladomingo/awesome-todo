@@ -23,6 +23,7 @@ import {
 } from '../apis/task'
 import CreateTask from './CreateTask'
 import EditTask from './EditTask'
+import Loading from './Loading'
 
 export default function Pane(props) {
   const [error, setError] = useState(null)
@@ -51,7 +52,7 @@ export default function Pane(props) {
   }, [by, reload])
 
   if (loading) {
-    return <div>loading...</div>
+    return <Loading />
   }
 
   if (error) {

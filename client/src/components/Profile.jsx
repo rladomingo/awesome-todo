@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import { getMyself } from '../apis/user'
 import { removeToken } from '../utils'
+import Loading from './Loading'
 
 export default function Profile(props) {
   const [user, setUser] = useState(null)
@@ -35,7 +36,7 @@ export default function Profile(props) {
   }
 
   if (loading) {
-    return <div>loading...</div>
+    return <Loading size="small" />
   }
 
   return (

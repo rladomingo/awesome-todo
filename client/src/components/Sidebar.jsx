@@ -14,6 +14,7 @@ import Profile from './Profile'
 import { Link, useNavigate } from 'react-router-dom'
 import { FormEdit, FormTrash } from 'grommet-icons'
 import EditCategory from './EditCategory'
+import Loading from './Loading'
 
 export default function Sidebar(props) {
   const [categories, setCategories] = useState(null)
@@ -44,7 +45,7 @@ export default function Sidebar(props) {
   }
 
   if (loading) {
-    return <div>loading...</div>
+    return <Loading />
   }
 
   return (

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import { loginUser } from '../apis/user'
 import { storeToken } from '../utils'
+import { Box, Button, Heading, TextInput, Paragraph, Anchor } from 'grommet'
 
 export default function Login(props) {
   const [form, setForm] = useState({
@@ -29,41 +30,52 @@ export default function Login(props) {
     setLoading(false)
   }
 
-  if (error) {
-    return <div>{error}</div>
-  }
-
   if (redirect) {
     return <Navigate to="/" />
   }
 
   return (
-    <div>
-      <div>
-        <label htmlFor="username">Username: </label>
-        <input
+    <Box
+      align="center"
+      justify="center"
+      height="100vh"
+      background="brand"
+    >
+      <Box
+        align="stretch"
+        background="light-1"
+        pad="16px"
+        direction="column"
+        gap="12px"
+        width='30vw'
+      >
+        <Heading margin="small" alignSelf="center">Login</Heading>
+        { error && <Paragraph color="status-error" alignSelf="center">{error}</Paragraph> }
+        <TextInput
           type="text"
           id="username"
-          placeholder="username"
+          placeholder="Enter username..."
           onChange={e => changeUsername(e.target.value)}
           value={form.username}
         />
-      </div>
-      <div>
-        <label htmlFor="password">Password: </label>
-        <input
-          type="text"
+        <TextInput
+          type="password"
           id="password"
-          placeholder="password"
+          placeholder="Enter password..."
           onChange={e => changePassword(e.target.value)}
           value={form.password}
         />
-      </div>
-      <div>
-        <button onClick={handleLogin}>
-          {loading ? 'Loading...' : 'Login'}
-        </button>
-      </div>
-    </div>
+        <Button
+          primary
+          hoverIndicator
+          disabled={loading}
+          label={loading ? 'Loading...' : 'Submit'}
+          onClick={handleLogin}
+        />
+        <Paragraph margin="small" alignSelf="center">
+          Don't have an account? <Anchor href="/register" label="Register" />
+        </Paragraph>
+      </Box>
+    </Box>
   )
 }

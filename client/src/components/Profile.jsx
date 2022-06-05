@@ -49,7 +49,9 @@ export default function Profile(props) {
       ]}
     >
       <Box gridArea="avatar">
-        <Avatar src="//s.gravatar.com/avatar/b7fb138d53ba0f573212ccce38a7c43b?s=80" />
+        <Avatar background="control">
+          <Text>{user.username[0].toUpperCase()}</Text>
+        </Avatar>
       </Box>
       <Box alignContent="center" justify="center" gridArea="info">
         <Text size="small">{user.username}</Text>

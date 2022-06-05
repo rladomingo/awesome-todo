@@ -134,6 +134,7 @@ export default function EditTask(props) {
       <Box direction="row" gap="8px" justify="between" align="center">
         <Box flex="grow">
           <Button
+            secondary
             hoverIndicator
             label="Cancel"
             onClick={() => {

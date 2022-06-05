@@ -60,6 +60,8 @@ export default function Pane(props) {
     return <div>{error}</div>
   }
 
+  console.log(tasks)
+
   if (groups.length === 0) {
     return <Empty text="Wow, such empty!" />
   }

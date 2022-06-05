@@ -75,7 +75,7 @@ def group_by_day(results):
                 res[due_date] = []
             res[due_date].append(result)
 
-    print(res)
+
     return res
 
 def get_month(key):
@@ -124,4 +124,5 @@ def group_by_month(results):
         if result.get('month') is not None:
             res[get_month(result.get('month'))].append(result)
 
-    return res
+    
+    return {k: v for k, v in res.items() if v}

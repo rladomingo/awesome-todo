@@ -21,6 +21,7 @@ import {
 } from '../apis/task'
 import CreateTask from './CreateTask'
 import EditTask from './EditTask'
+import Empty from './Empty'
 import Loading from './Loading'
 
 export default function Pane(props) {
@@ -63,6 +64,10 @@ export default function Pane(props) {
 
   if (error) {
     return <div>{error}</div>
+  }
+
+  if (todos.not_completed.length === 0 && todos.completed.length === 0) {
+    return <Empty text="Wow, such empty!" />
   }
 
   return (

@@ -9,6 +9,7 @@ export default function CreateTask(props) {
   const [loading, setLoading] = useState(false)
   const params = useParams()
   const { cat_id } = params
+  const { isEmpty } = props
 
   const handleCreate = async () => {
     setLoading(true)
@@ -29,7 +30,7 @@ export default function CreateTask(props) {
   }
 
   return (
-    <Box margin="12px 0">
+    <Box flex={!isEmpty ? 'shrink' : 'grow'} margin="12px 0">
       <Box margin="0 0 12px 0">
         <TextInput
           value={title}

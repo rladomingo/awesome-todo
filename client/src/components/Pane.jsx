@@ -23,6 +23,7 @@ import CreateTask from './CreateTask'
 import EditTask from './EditTask'
 import Empty from './Empty'
 import Loading from './Loading'
+import TaskDetail from './TaskDetail'
 
 export default function Pane(props) {
   const [todos, setTodos] = useState(null)
@@ -66,9 +67,12 @@ export default function Pane(props) {
     return <div>{error}</div>
   }
 
-  if (todos.not_completed.length === 0 && todos.completed.length === 0) {
-    return <Empty text="Wow, such empty!" />
-  }
+  // if () {
+  //   return <Empty text="Wow, such empty!" />
+  // }
+
+  const isEmpty =
+    todos.not_completed.length === 0 && todos.completed.length === 0
 
   return (
     <Box gridArea="pane" background="light-1">
@@ -86,62 +90,103 @@ export default function Pane(props) {
         )}
         <PageContent height="100%">
           <Box justify="between" direction="column" height="100%">
-            <Box>
+            {!isEmpty && (
               <Box>
-                {category && <Heading size="small">{category.name}</Heading>}
-                {!cat_id && <Heading size="small">All</Heading>}
-              </Box>
-              <Box>
-                <List
-                  primaryKey="title"
-                  data={todos.not_completed}
-                  children={(item, index, obj) => {
-                    return (
-                      <Box direction="row" justify="between">
-                        <Box
-                          direction="row"
-                          key={index}
-                          pad="xsmall"
-                          gap="16px"
-                        >
-                          <CheckBox
-                            name={item.title}
-                            checked={item.completed !== 0}
-                            onChange={async e => {
-                              try {
-                                await markTodoAsDone(item.task_id, 1)
-                                setError(null)
-                                setReload(prev => !prev)
-                              } catch (err) {
-                                setError(String(err))
-                              }
-                            }}
-                          />
-                          <Box>
-                            <Text>{item.title}</Text>
-                            <Box direction="row" align="center" gap="8px">
-                              <Text size="xsmall">
-                                {item.description && item.description}
-                              </Text>
-                              <Text size="xsmall">
-                                Due date:{' '}
-                                {(item.due_date && item.due_date) || 'N/A'}
-                              </Text>
-                            </Box>
+                <Box>
+                  {category && <Heading size="small">{category.name}</Heading>}
+                  {!cat_id && <Heading size="small">All</Heading>}
+                </Box>
+                <Box>
+                  <List
+                    primaryKey="title"
+                    data={todos.not_completed}
+                    children={(item, index, obj) => {
+                      return (
+                        <Box direction="row" justify="between">
+                          <Box
+                            direction="row"
+                            key={index}
+                            pad="xsmall"
+                            gap="16px"
+                          >
+                            <CheckBox
+                              name={item.title}
+                              checked={item.completed !== 0}
+                              onChange={async e => {
+                                try {
+                                  await markTodoAsDone(item.task_id, 1)
+                                  setError(null)
+                                  setReload(prev => !prev)
+                                } catch (err) {
+                                  setError(String(err))
+                                }
+                              }}
+                            />
+                            <TaskDetail item={item} />
+                          </Box>
+                          <Box direction="row">
+                            <Button
+                              hoverIndicator
+                              icon={<FormEdit />}
+                              onClick={() => {
+                                setShowTask(true)
+                                setSelectedTask(item)
+                              }}
+                            />
+                            <Button
+                              hoverIndicator
+                              icon={<FormTrash />}
+                              onClick={async () => {
+                                try {
+                                  await deleteTask(item.task_id)
+                                  setError(null)
+                                  setReload(prev => !prev)
+                                } catch (err) {
+                                  setError(String(err))
+                                }
+                              }}
+                            />
                           </Box>
                         </Box>
-                        <Box direction="row">
+                      )
+                    }}
+                  />
+                </Box>
+                <Box margin="32px 0" width="30%">
+                  <Text size="small">Completed</Text>
+                </Box>
+                <Box>
+                  <List
+                    primaryKey="title"
+                    data={todos.completed}
+                    children={(item, index, obj) => {
+                      return (
+                        <Box direction="row" key={index} justify="between">
+                          <Box direction="row" pad="xsmall" gap="16px">
+                            <CheckBox
+                              name={item.title}
+                              checked={item.completed !== 0}
+                              onChange={async e => {
+                                try {
+                                  await markTodoAsDone(item.task_id, 0)
+                                  setError(null)
+                                  setReload(prev => !prev)
+                                } catch (err) {
+                                  setError(String(err))
+                                }
+                              }}
+                            />
+                            <Text
+                              style={{
+                                textDecoration: 'line-through',
+                              }}
+                            >
+                              {item.title}
+                            </Text>
+                          </Box>
                           <Button
-                            hoverIndicator
-                            icon={<FormEdit />}
-                            onClick={() => {
-                              setShowTask(true)
-                              setSelectedTask(item)
-                            }}
-                          />
-                          <Button
-                            hoverIndicator
                             icon={<FormTrash />}
+                            hoverIndicator
                             onClick={async () => {
                               try {
                                 await deleteTask(item.task_id)
@@ -153,63 +198,17 @@ export default function Pane(props) {
                             }}
                           />
                         </Box>
-                      </Box>
-                    )
-                  }}
-                />
+                      )
+                    }}
+                  />
+                </Box>
               </Box>
-              <Box margin="32px 0" width="30%">
-                <Text size="small">Completed</Text>
-              </Box>
-              <Box>
-                <List
-                  primaryKey="title"
-                  data={todos.completed}
-                  children={(item, index, obj) => {
-                    return (
-                      <Box direction="row" key={index} justify="between">
-                        <Box direction="row" pad="xsmall" gap="16px">
-                          <CheckBox
-                            name={item.title}
-                            checked={item.completed !== 0}
-                            onChange={async e => {
-                              try {
-                                await markTodoAsDone(item.task_id, 0)
-                                setError(null)
-                                setReload(prev => !prev)
-                              } catch (err) {
-                                setError(String(err))
-                              }
-                            }}
-                          />
-                          <Text
-                            style={{
-                              textDecoration: 'line-through',
-                            }}
-                          >
-                            {item.title}
-                          </Text>
-                        </Box>
-                        <Button
-                          icon={<FormTrash />}
-                          hoverIndicator
-                          onClick={async () => {
-                            try {
-                              await deleteTask(item.task_id)
-                              setError(null)
-                              setReload(prev => !prev)
-                            } catch (err) {
-                              setError(String(err))
-                            }
-                          }}
-                        />
-                      </Box>
-                    )
-                  }}
-                />
-              </Box>
-            </Box>
-            <CreateTask reload={() => setReload(prev => !prev)} />
+            )}
+            {isEmpty && <Empty text="Wow, such empty!" />}
+            <CreateTask
+              isEmpty={isEmpty}
+              reload={() => setReload(prev => !prev)}
+            />
           </Box>
         </PageContent>
       </Page>

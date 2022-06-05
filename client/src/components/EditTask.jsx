@@ -84,7 +84,7 @@ export default function EditTask(props) {
       }}
     >
       <Paragraph size="large" textAlign="center">
-        Are you sure you want to edit {task.title}?
+        Are you sure you want to edit {props.task.title}?
       </Paragraph>
       <Box
         direction="column"

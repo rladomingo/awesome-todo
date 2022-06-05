@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import { registerUser } from '../apis/user'
+import { Box, Button, Heading, TextInput, Paragraph, Anchor } from 'grommet'
 
 export default function Register(props) {
   const [form, setForm] = useState({
@@ -17,27 +18,28 @@ export default function Register(props) {
   const changePassword = val => setForm(prev => ({ ...prev, password: val }))
 
   const handleRegister = async () => {
-    try {
-      setLoading(true)
-      await registerUser(form.username, form.email, form.password)
-      setError(null)
-      setLoading(false)
-      setRedirect(true)
-    } catch (err) {
-      setError(String(err))
-      setLoading(false)
-      setRedirect(false)
-    } finally {
-      setForm({
-        username: '',
-        email: '',
-        password: '',
-      })
+    if (form.username == '' || form.email == '' || form.password == '') {
+      setError('Error: all fields are required');
+      return;
+    } else {
+      try {
+        setLoading(true)
+        await registerUser(form.username, form.email, form.password)
+        setError(null)
+        setLoading(false)
+        setRedirect(true)
+      } catch (err) {
+        setError(String(err))
+        setLoading(false)
+        setRedirect(false)
+      } finally {
+        setForm({
+          username: '',
+          email: '',
+          password: '',
+        })
+      }
     }
-  }
-
-  if (error) {
-    return <div>{error}</div>
   }
 
   if (redirect) {
@@ -45,42 +47,54 @@ export default function Register(props) {
   }
 
   return (
-    <div>
-      <div>
-        <label htmlFor="username">Username: </label>
-        <input
+    <Box
+      align="center"
+      justify="center"
+      height="100vh"
+      background="brand"
+    >
+      <Box
+        align="stretch"
+        background="light-1"
+        pad="16px"
+        direction="column"
+        gap="12px"
+        width='30vw'
+      >
+        <Heading margin="small" alignSelf="center">Register</Heading>
+        { error && <Paragraph color="status-error" alignSelf="center">{error}</Paragraph> }
+        <TextInput
           type="text"
-          placeholder="username"
+          placeholder="Enter username..."
           id="username"
           value={form.username}
           onChange={e => changeUsername(e.target.value)}
         />
-      </div>
-      <div>
-        <label htmlFor="email">Email: </label>
-        <input
-          type="text"
-          placeholder="email"
+        <TextInput
+          type="email"
+          placeholder="Enter email..."
           id="email"
           value={form.email}
           onChange={e => changeEmail(e.target.value)}
         />
-      </div>
-      <div>
-        <label htmlFor="password">Password: </label>
-        <input
-          type="text"
-          placeholder="password"
+        <TextInput
+          type="password"
+          placeholder="Enter password..."
           id="password"
           value={form.password}
           onChange={e => changePassword(e.target.value)}
         />
-      </div>
-      <div>
-        <button onClick={handleRegister}>
-          {loading ? 'Loading...' : 'Register'}
-        </button>
-      </div>
-    </div>
+        <Button
+          primary
+          hoverIndicator
+          disabled={loading}
+          label={loading ? 'Loading...' : 'Submit'}
+          onClick={handleRegister}
+        />
+        <Paragraph margin="small" alignSelf="center">
+          Already have an account? <Anchor href="/login" label="Login" />
+        </Paragraph>
+      </Box>
+    </Box>
   )
 }

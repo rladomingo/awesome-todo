@@ -97,6 +97,9 @@ export default function Pane(props) {
                   {!cat_id && <Heading size="small">All</Heading>}
                 </Box>
                 <Box>
+                  <Box margin="32px 0" width="30%">
+                    <Text size="small">Todo</Text>
+                  </Box>
                   <List
                     primaryKey="title"
                     data={todos.not_completed}

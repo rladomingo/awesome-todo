@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react'
 import { deleteCategory, retrieveMyCategories } from '../apis/category'
 import CreateCategory from './CreateCategory'
 import Profile from './Profile'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, Navigate } from 'react-router-dom'
 import { FormEdit, FormTrash } from 'grommet-icons'
 import EditCategory from './EditCategory'
 import Loading from './Loading'
@@ -41,7 +41,7 @@ export default function Sidebar(props) {
   }, [refresh])
 
   if (error) {
-    return <div>{error}</div>
+    return <Navigate to="/login" />
   }
 
   if (loading) {

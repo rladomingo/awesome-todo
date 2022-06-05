@@ -77,6 +77,7 @@ export default function Sidebar(props) {
                 onClick={() => {
                   setShowDelete(false)
                   setSelectedCategory(null)
+                  setRefresh(prev => ++prev)
                 }}
               />
             </Box>

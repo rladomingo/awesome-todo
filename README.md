@@ -1,4 +1,4 @@
-# awesome_todo
+# cmsc127_full_stack
 
 A CMSC 127 Full-stack Project
 ## Documentation

@@ -11,6 +11,21 @@ A CMSC 127 Full-stack Project
 1. Open your MariaDB interpreter.
 2. Inside MariaDB, enter `source ./sql/seed.sql` to seed the database.
 
+## Setup environment
+1. At the root of your project directory, create a file name ```.env```. Copy paste the code below:
+
+```
+USERNAME=
+PASSWORD=
+DATABASE=awesome_todo
+SERVER_PORT=8000
+CLIENT_PORT=3000
+SECRET_KEY=2zyalxwXbyaZVoXqoXGUKJXBVQANzBo3
+PORT=3306
+```
+
+2. Make sure to enter your ```USERNAME``` and ```PASSWORD``` credentials for your database. For the ```SECRET_KEY```, you can just left it like that or enter your own key.
+
 ## Setup server
 
 1. Create a project environment by using this command `python3 -m venv ./venv`.

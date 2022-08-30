@@ -12,7 +12,6 @@ export default function EditCategory(props) {
   const handleSave = async () => {
     setLoading(true)
     try {
-      // do save here
       await editCategory(cat.cat_id, cat.name)
 
       setError(null)
@@ -37,7 +36,7 @@ export default function EditCategory(props) {
         padding: '16px',
       }}
     >
-      <Paragraph>Edit {category.name}</Paragraph>
+      <Paragraph size="large" textAlign="center">Are you sure you want to edit {category.name}?</Paragraph>
       <Box direction="column" gap="12px" justify="between" align="stretch">
         <Box>
           <TextInput

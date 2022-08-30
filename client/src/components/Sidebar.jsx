@@ -5,7 +5,6 @@ import {
   Box,
   Layer,
   Paragraph,
-  Heading,
 } from 'grommet'
 import { useEffect, useState } from 'react'
 import { deleteCategory, retrieveMyCategories } from '../apis/category'
@@ -119,64 +118,66 @@ export default function Sidebar(props) {
         header={<Profile />}
         footer={<CreateCategory refresh={setRefresh} />}
       >
-        <Nav gap="small">
-          <Button
-            primary
-            hoverIndicator
-            label="All tasks"
-            onClick={() => {
-              navigate(`/`)
-            }}
-          />
-          <Button
-            primary
-            hoverIndicator
-            label="Planned"
-            onClick={() => {
-              navigate(`/planned`)
-            }}
-          />
-          {categories &&
-            categories.map(category => (
-              <Box
-                key={category.cat_id}
-                direction="row"
-                justify="between"
-                align="center"
-              >
-                <Box flex="grow">
-                  <Button
-                    primary
-                    hoverIndicator
-                    label={category.name}
-                    onClick={() => {
-                      navigate(`/${category.cat_id}`)
-                    }}
-                  />
+        <Box overflow={{vertical: "scroll"}} height="100%" pad={{right: "10px"}}>
+          <Nav gap="small">
+            <Button
+              primary
+              hoverIndicator
+              label="All tasks"
+              onClick={() => {
+                navigate(`/`)
+              }}
+            />
+            <Button
+              primary
+              hoverIndicator
+              label="Planned"
+              onClick={() => {
+                navigate(`/planned`)
+              }}
+            />
+            {categories &&
+              categories.map(category => (
+                <Box
+                  key={category.cat_id}
+                  direction="row"
+                  justify="between"
+                  align="center"
+                >
+                  <Box flex="grow">
+                    <Button
+                      primary
+                      hoverIndicator
+                      label={category.name}
+                      onClick={() => {
+                        navigate(`/${category.cat_id}`)
+                      }}
+                    />
+                  </Box>
+                  <Box flex="shrink">
+                    <Button
+                      icon={<FormEdit />}
+                      hoverIndicator
+                      onClick={() => {
+                        setSelectedCategory(category)
+                        setShowEdit(true)
+                      }}
+                    />
+                  </Box>
+                  <Box flex="shrink">
+                    <Button
+                      icon={<FormTrash />}
+                      hoverIndicator
+                      onClick={() => {
+                        setShowDelete(true)
+                        setSelectedCategory(category)
+                      }}
+                    />
+                  </Box>
                 </Box>
-                <Box flex="shrink">
-                  <Button
-                    icon={<FormEdit />}
-                    hoverIndicator
-                    onClick={() => {
-                      setSelectedCategory(category)
-                      setShowEdit(true)
-                    }}
-                  />
-                </Box>
-                <Box flex="shrink">
-                  <Button
-                    icon={<FormTrash />}
-                    hoverIndicator
-                    onClick={() => {
-                      setShowDelete(true)
-                      setSelectedCategory(category)
-                    }}
-                  />
-                </Box>
-              </Box>
-            ))}
-        </Nav>
+              ))}
+          </Nav>
+        </Box>
       </GrommetSidebar>
     </>
   )

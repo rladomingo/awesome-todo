@@ -4,26 +4,19 @@ import {
   Page,
   PageContent,
   List,
-  RadioButton,
   Text,
   CheckBox,
   Button,
   Select,
 } from 'grommet'
-import { FormEdit, FormTrash } from 'grommet-icons'
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { retrieveACategory } from '../apis/category'
+import { FormTrash } from 'grommet-icons'
+import { useEffect, useState, Fragment } from 'react'
 import {
   deleteTask,
   markTodoAsDone,
-  retrieveAllTasks,
-  retrieveTasksByCat,
   retrieveTasksGroupBy,
 } from '../apis/task'
-import CreateTask from './CreateTask'
-import EditTask from './EditTask'
-import Empty from './Empty'
+import Message from './Message'
 import Loading from './Loading'
 
 export default function Pane(props) {
@@ -47,7 +40,6 @@ export default function Pane(props) {
         setTasks(null)
       } finally {
         setLoading(false)
-        //   setReload(false)
       }
     })()
   }, [by, reload])
@@ -57,13 +49,13 @@ export default function Pane(props) {
   }
 
   if (error) {
-    return <div>{error}</div>
+    return <Message text={`Whoops, something went wrong. Please try again later. (${error})`} />
   }
 
   console.log(tasks)
 
   if (groups.length === 0) {
-    return <Empty text="Wow, such empty!" />
+    return <Message text="Wow, such empty!" />
   }
 
   return (
@@ -73,38 +65,28 @@ export default function Pane(props) {
           minHeight: '100vh',
         }}
       >
-        {/* {showTask && (
-            <EditTask
-              setShow={setShowTask}
-              task={selectedTask}
-              reload={setReload}
-            />
-          )} */}
         <PageContent height="100%">
           <Box justify="between" direction="column" height="100%">
-            <Box>
-              <Box direction="row" align="center" justify="between">
-                <Heading size="small">Planned</Heading>
-                <Select
-                  options={['day', 'month']}
-                  value={by}
-                  onChange={({ option }) => setBy(option)}
-                />
-              </Box>
-              <Box>
-                {/*  */}
+            <Box direction="row" align="center" justify="between">
+              <Heading size="small">Planned</Heading>
+              <Select
+                options={['day', 'month']}
+                value={by}
+                onChange={({ option }) => setBy(option)}
+              />
+            </Box>
+            <Box overflow={{vertical: "scroll"}} height="100%" pad={{right: "10px"}}>
+              <Box gap="medium">
                 {groups &&
                   groups.map(group => (
-                    <Box key={group}>
-                      <Box margin="32px 0" width="30%">
-                        <Text size="small">{group}</Text>
-                      </Box>
-                      <List
+                    <Fragment key={group}>
+                      <Text size="medium" weight="bold">{group.toUpperCase()}</Text>
+                      <List 
                         primaryKey="title"
                         data={tasks[group]}
                         children={(item, index, obj) => {
                           return (
-                            <Box direction="row" key={index} justify="between">
+                            <Box direction="row" key={index} justify="between" >
                               <Box direction="row" pad="xsmall" gap="16px">
                                 <CheckBox
                                   name={item.title}
@@ -150,13 +132,10 @@ export default function Pane(props) {
                           )
                         }}
                       />
-                    </Box>
+                    </Fragment>
                   ))}
-
-                {/*  */}
               </Box>
             </Box>
-            {/* <CreateTask reload={() => setReload(prev => !prev)} /> */}
           </Box>
         </PageContent>
       </Page>

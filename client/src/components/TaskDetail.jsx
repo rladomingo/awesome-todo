@@ -10,7 +10,7 @@ const TaskDetail = props => {
       <Box direction="column" align="start">
         <Text size="xsmall">{item.description && item.description}</Text>
         {item.due_date && (
-          <Text size="xsmall">Due date on {item.due_date}</Text>
+          <Text size="xsmall">Due date on {item.due_date.slice(0, -13)}</Text>
         )}
       </Box>
     </Box>

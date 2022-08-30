@@ -1,6 +1,6 @@
-# cmsc127_full_stack
+# awesome-todo
 
-A CMSC 127 Full-stack Project
+This is a task record system created by Coleen Calma, Von Divino, and Reamonn Lois Domingo as a final requirement for CMSC 127: File Processing and Database Systems.
 ## Documentation
 
 1. [Postman](https://vrfdivino.postman.co/workspace/CMSC-127-Project~35fdb369-819b-4028-ab4a-2e2be2dd5e5b/overview) 
@@ -24,7 +24,7 @@ SECRET_KEY=2zyalxwXbyaZVoXqoXGUKJXBVQANzBo3
 PORT=3306
 ```
 
-2. Make sure to enter your ```USERNAME``` and ```PASSWORD``` credentials for your database. For the ```SECRET_KEY```, you can just left it like that or enter your own key.
+2. Make sure to enter your ```USERNAME``` and ```PASSWORD``` credentials for your database. For the ```SECRET_KEY```, you can just leave it like that or enter your own key.
 
 ## Setup server
 

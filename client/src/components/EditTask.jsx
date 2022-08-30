@@ -48,7 +48,7 @@ export default function EditTask(props) {
         task.due_date,
         task.cat_id
       )
-      //   console.log(task)
+
       reload(prev => !prev)
       setShow(false)
     } catch (err) {
@@ -58,7 +58,6 @@ export default function EditTask(props) {
     }
   }
 
-  //   console.log(task)
   useEffect(() => {
     ;(async () => {
       try {
@@ -82,6 +81,7 @@ export default function EditTask(props) {
         width: '50vh',
         padding: '16px',
       }}
+      
     >
       <Paragraph size="large" textAlign="center">
         Are you sure you want to edit {props.task.title}?
@@ -105,6 +105,7 @@ export default function EditTask(props) {
             placeholder="Description"
             value={task.description || ''}
             onChange={e => changeDesc(e.target.value)}
+            resize="vertical"
           />
         </Box>
         <Box>
@@ -143,7 +144,6 @@ export default function EditTask(props) {
             disabled={loading}
           />
         </Box>
-
         <Box flex="grow">
           <Button
             hoverIndicator

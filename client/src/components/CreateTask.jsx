@@ -30,7 +30,7 @@ export default function CreateTask(props) {
   }
 
   return (
-    <Box flex={!isEmpty ? 'shrink' : 'grow'} margin="12px 0">
+    <Box margin="12px 0" width="100%">
       <Box margin="0 0 12px 0">
         <TextInput
           value={title}

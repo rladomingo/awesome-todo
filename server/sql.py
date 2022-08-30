@@ -19,4 +19,4 @@ class SQL:
     EDIT_CATEGORY = 'UPDATE category SET name = ? WHERE user_id = ? AND cat_id = ?'
     DELETE_CATEGORY = 'DELETE FROM category WHERE user_id = ? AND cat_id = ?'
     VIEW_CATEGORY = 'SELECT name, (SELECT COUNT(*) FROM task WHERE user_id = ? AND cat_id = ?) as num_of_task FROM category WHERE user_id = ? AND cat_id = ?'
-    VIEW_ALL_CATEGORY = 'SELECT name, (SELECT COUNT(*) FROM task WHERE user_id = ?) as num_of_task FROM category WHERE user_id = ?'
+    VIEW_ALL_CATEGORY = 'SELECT name, (SELECT COUNT(*) FROM task t WHERE user_id = ? AND c.cat_id = t.cat_id) as num_of_task FROM category c WHERE user_id = ?;'

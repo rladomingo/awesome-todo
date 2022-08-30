@@ -1,7 +1,6 @@
 import { Box, Button, TextInput } from 'grommet'
 import { useState } from 'react'
 import { createCategory } from '../apis/category'
-import { delay } from '../utils'
 
 export default function CreateCategory({ refresh }) {
   const [category, setCategory] = useState('')
@@ -25,8 +24,6 @@ export default function CreateCategory({ refresh }) {
         onClick={async () => {
           setLoading(true)
 
-          /// do create category here
-          // await delay(2000)
           try {
             await createCategory(category)
             refresh()
